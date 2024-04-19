@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:first_app1/screens/flight_info_screen.dart'; // استيراد شاشة معلومات الرحلة
+
+import 'flight_info_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -15,11 +16,11 @@ class _LoginScreenState extends State<LoginScreen> {
     var column2 = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircleAvatar(
+        const CircleAvatar(
           radius: 50,
           backgroundImage: AssetImage('image/airport.png'),
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Text(
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
         Padding(
@@ -41,8 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -52,13 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 15,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.blue[900],
               borderRadius: BorderRadius.circular(12),
@@ -71,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (context) => FlightInfoScreen()),
                 );
               },
-              child: Center(
+              child: const Center(
                 child: Text(
                   'sign in',
                   style: TextStyle(
