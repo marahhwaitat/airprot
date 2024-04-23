@@ -1,12 +1,13 @@
-import 'package:airprot/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'core/utilities/themes.dart';
-import 'screens/login_screen.dart'; // Import LoginScreen
-import 'screens/admin_login_screen.dart'; // Import AdminLoginScreen
-
 import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
+
+import 'core/utilities/themes.dart';
+import 'presentation/screens/splash_screen.dart';
+
+
 
 
 void main() async{

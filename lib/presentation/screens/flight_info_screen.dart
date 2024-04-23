@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class FlightInfoScreen extends StatefulWidget {
+  const FlightInfoScreen({super.key});
+
   @override
-  _FlightInfoScreenState createState() => _FlightInfoScreenState();
+  FlightInfoScreenState createState() => FlightInfoScreenState();
 }
 
-class _FlightInfoScreenState extends State<FlightInfoScreen> {
+class FlightInfoScreenState extends State<FlightInfoScreen> {
   late Timer _timer;
   late DateTime departureTime;
 
@@ -14,7 +16,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
   void initState() {
     super.initState();
     // Set the departure time (10:00 AM in this example)
-    departureTime = DateTime.now().add(Duration(hours: 10));
+    departureTime = DateTime.now().add(const Duration(hours: 10));
     // Start the timer
     _startTimer();
   }
@@ -26,7 +28,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         // Update the UI every second to reflect the remaining time
       });
@@ -40,7 +42,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flight Information'),
+        title: const Text('Flight Information'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,7 +55,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
               {'label': 'Passport Number', 'value': 'AB123456'},
               {'label': 'Destination', 'value': 'New York'},
             ]),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             _buildSectionTitle('Flight Details'),
             _buildInfoTable([
               {'label': 'Departure Time', 'value': '10:00 AM'},
@@ -75,7 +77,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           color: Colors.blue,
@@ -91,7 +93,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
         color: Colors.grey[200],
       ),
       child: Table(
-        columnWidths: {
+        columnWidths: const {
           0: FlexColumnWidth(1),
           1: FlexColumnWidth(2),
         },
@@ -105,7 +107,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     '$label:',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.black87,
                     ),
@@ -117,7 +119,7 @@ class _FlightInfoScreenState extends State<FlightInfoScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     value,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.black87,
                     ),
