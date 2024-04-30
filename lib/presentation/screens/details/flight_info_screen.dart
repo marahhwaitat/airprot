@@ -1,8 +1,16 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+
+import '../../../core/global/global.dart';
+import '../../../data/models/flight_model.dart';
+import '../../../data/models/passenger_model.dart';
+
 class FlightInfoScreen extends StatefulWidget {
-  const FlightInfoScreen({super.key});
+  final String passportNum;
+  const FlightInfoScreen({super.key, required this.passportNum});
 
   @override
   FlightInfoScreenState createState() => FlightInfoScreenState();
@@ -10,14 +18,15 @@ class FlightInfoScreen extends StatefulWidget {
 
 class FlightInfoScreenState extends State<FlightInfoScreen> {
   late Timer _timer;
-  late DateTime departureTime;
+  late Passenger _passenger;
+  late Flight _flight;
 
   @override
   void initState() {
     super.initState();
-    // Set the departure time (10:00 AM in this example)
-    departureTime = DateTime.now().add(const Duration(hours: 10));
     // Start the timer
+    _passenger = myPassengers.firstWhere((passenger) => passenger.passportNum == widget.passportNum);
+    _flight = myFlights.firstWhere((flight) => flight.flightId == _passenger.flightId);
     _startTimer();
   }
 
@@ -38,7 +47,7 @@ class FlightInfoScreenState extends State<FlightInfoScreen> {
   @override
   Widget build(BuildContext context) {
     // Calculate the remaining time until departure
-    Duration remainingTime = departureTime.difference(DateTime.now());
+    Duration remainingTime = _flight.departureTime!.difference(DateTime.now());
 
     return Scaffold(
       appBar: AppBar(
@@ -51,20 +60,24 @@ class FlightInfoScreenState extends State<FlightInfoScreen> {
           children: [
             _buildSectionTitle('Passenger Details'),
             _buildInfoTable([
-              {'label': 'Passenger Name', 'value': 'John Doe'},
-              {'label': 'Passport Number', 'value': 'AB123456'},
-              {'label': 'Destination', 'value': 'New York'},
+              {'label': 'Passenger Name', 'value': _passenger.passengerName},
+              {'label': 'Passport Number', 'value': _passenger.passportNum},
+              {'label': 'origin', 'value': _flight.origin},
+              {'label': 'Destination', 'value': _flight.destination},
             ]),
             const SizedBox(height: 20.0),
             _buildSectionTitle('Flight Details'),
             _buildInfoTable([
-              {'label': 'Departure Time', 'value': '10:00 AM'},
-              {'label': 'Arrival Time', 'value': '12:00 PM'},
-              {'label': 'Gate Number', 'value': '12A'},
-              {
-                'label': 'Remaining Time',
-                'value': _formatRemainingTime(remainingTime)
-              },
+              {'label': 'Departure Time',
+                'value': DateFormat('dd/MM,  HH:mm a').format(_flight.departureTime!)},
+              {'label': 'Arrival Time',
+                'value': DateFormat('dd/MM,  HH:mm a').format(_flight.arrivalTime!)},
+              {'label': 'Gate Number', 'value': '${_flight.gateNum}'},
+              {'label': 'Open Gate Time',
+                'value': DateFormat('HH:mm a').format(_flight.openGateTime!)},
+              {'label': 'Close Gate Time',
+                'value': DateFormat('HH:mm a').format(_flight.closeGateTime!)},
+              {'label': 'Remaining Time', 'value': _formatRemainingTime(remainingTime), 'color': ''},
             ]),
           ],
         ),
@@ -95,18 +108,16 @@ class FlightInfoScreenState extends State<FlightInfoScreen> {
       child: Table(
         columnWidths: const {
           0: FlexColumnWidth(1),
-          1: FlexColumnWidth(2),
+          1: FlexColumnWidth(1),
         },
         children: data.map((item) {
-          final label = item['label'] ?? '';
-          final value = item['value'] ?? '';
           return TableRow(
             children: [
               TableCell(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '$label:',
+                    '${item['label'] ?? ''}:',
                     style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.black87,
@@ -118,10 +129,9 @@ class FlightInfoScreenState extends State<FlightInfoScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black87,
+                    item['value'] ?? '',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: item['color'] == null? Colors.black87 : Colors.red,
                     ),
                   ),
                 ),

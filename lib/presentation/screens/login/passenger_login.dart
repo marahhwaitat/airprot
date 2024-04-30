@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
-import 'flight_info_screen.dart';
+import 'package:lottie/lottie.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../../../core/utils/utilities.dart';
+import '../details/flight_info_screen.dart';
+
+class PassengerLogin extends StatefulWidget {
+  const PassengerLogin({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<PassengerLogin> createState() => _PassengerLoginState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _PassengerLoginState extends State<PassengerLogin> {
 
   final _formKey = GlobalKey<FormState>();
-  final _controller = TextEditingController();
+
+  final _passportController = TextEditingController();
+
+  String? _errorMessage;
 
   @override
   void dispose() {
-    _controller.dispose();
+    _passportController.dispose();
     super.dispose();
   }
 
@@ -27,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(size.height * 0.02),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -36,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: Image.asset('assets/images/login.png')
+                  child: Lottie.asset('assets/lottie/login.json')
               ),
 
               Padding(
@@ -46,24 +52,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //mail
+                      //passport
                       TextFormField(
-                        controller: _controller,
+                        controller: _passportController,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(15)),
                           ),
                           labelText: 'Passport',
                           labelStyle: Theme.of(context).textTheme.bodySmall,
-                          prefixIcon: Icon(Icons.mail, color: Theme.of(context).primaryColor,),
                         ),
                         validator: (value) => value == null || value.isEmpty ? 'Please enter your Passport Number' : null,
                       ),
+                      SizedBox(height: size.height * 0.02,),
 
-                      // if (_errorMessage != null)
-                      //   Text(_errorMessage!,
-                      //       style: const TextStyle(color: Colors.red)
-                      //   ),
+
+                      SizedBox(height: size.height * 0.02,),
+                      if (_errorMessage != null)
+                        Text(_errorMessage!,
+                            style: const TextStyle(color: Colors.red)
+                        ),
 
                       SizedBox(height: size.height * 0.02,),
 
@@ -74,15 +82,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: (){
                             if (_formKey.currentState!.validate()) {
-                                Navigator.pushReplacement(context,
-                                    MaterialPageRoute(builder: (context) => const FlightInfoScreen()));
-                                //val.toast(context, "Login Successfully");
-                              }
+                              if(existingPassenger(_passportController.text)) {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        FlightInfoScreen(passportNum: _passportController.text)));
+                              }else{
+                                setState(() {
+                                  _errorMessage = 'Passenger Not Fount';
+                                });
+                              }}
                             },
-                          child: const Text('Login'),
+                          child: Text('Find', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),),
                         ),
                       ),
-
                       SizedBox(height: size.height * 0.02,),
                     ],
                   ),

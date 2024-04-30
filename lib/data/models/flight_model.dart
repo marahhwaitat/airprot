@@ -1,7 +1,4 @@
 
-
-import 'package:flutter/material.dart';
-
 class Flight {
   String airlineId;
 
@@ -13,11 +10,11 @@ class Flight {
   String origin;
   String destination;
 
-  TimeOfDay? departureTime;
-  TimeOfDay? arrivalTime;
+  DateTime? departureTime = DateTime.now();
+  DateTime? arrivalTime = DateTime.now();
 
-  TimeOfDay? openGateTime;
-  TimeOfDay? closeGateTime;
+  DateTime? openGateTime = DateTime.now();
+  DateTime? closeGateTime = DateTime.now();
 
   List<String> passengerIds;
 
@@ -43,25 +40,28 @@ class Flight {
         gateNum: map['gateNum'] ?? 0,
         origin: map['origin'] ?? '',
         destination: map['destination'] ?? '',
-        departureTime: map['departureTime'],
-        arrivalTime: map['arriveTime'],
-        openGateTime: map['openGateTime'],
-        closeGateTime: map['closeGateTime'],
+        departureTime: map['departureTime'] == null
+            ? DateTime.now() : DateTime.parse(map['departureTime'] as String),
+        arrivalTime: map['arriveTime'] == null
+            ? DateTime.now() : DateTime.parse(map['arriveTime'] as String),
+        openGateTime: map['openGateTime'] == null
+            ? DateTime.now() : DateTime.parse(map['openGateTime'] as String),
+        closeGateTime: map['closeGateTime'] == null
+            ? DateTime.now() : DateTime.parse(map['closeGateTime'] as String),
         passengerIds: map['passengerIds'] ?? const [],
     );
   }
 
-  static Map<String, dynamic> toMap(Flight airport) => {
-    'airlineId': airport.airlineId,
-    'flightId': airport.flightId,
-    'flightNum': airport.flightNum,
-    'gateNum': airport.gateNum,
-    'origin': airport.origin,
-    'destination': airport.destination,
-    'departureTime': airport.departureTime,
-    'arriveTime': airport.arrivalTime,
-    'openGateTime': airport.openGateTime,
-    'closeGateTime': airport.closeGateTime,
-    'passengerIds': airport.passengerIds,
+  static Map<String, dynamic> toMap(Flight flight) => {
+    'airlineId': flight.airlineId,
+    'flightNum': flight.flightNum,
+    'gateNum': flight.gateNum,
+    'origin': flight.origin,
+    'destination': flight.destination,
+    'departureTime': flight.departureTime!.toIso8601String(),
+    'arriveTime': flight.arrivalTime!.toIso8601String(),
+    'openGateTime': flight.openGateTime!.toIso8601String(),
+    'closeGateTime': flight.closeGateTime!.toIso8601String(),
+    'passengerIds': flight.passengerIds,
   };
 }

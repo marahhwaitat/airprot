@@ -25,4 +25,20 @@ class PassengersFirebaseManger {
       throw Exception();
     }
   }
+
+  static Future uploadPassenger(Passenger passenger) async {
+
+    try {
+
+      CollectionReference questionCollection =
+      FirebaseFirestore.instance.collection('Passengers');
+
+      //add question
+      await questionCollection.add(Passenger.toMap(passenger));
+
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
 }

@@ -8,8 +8,8 @@ class AppTheme {
     canvasColor: canvas,
     focusColor: primary.withOpacity(0.1),
     dividerColor: const Color(0xffBBBBBB),
-    hintColor: Colors.white,
-    splashColor: Colors.white,
+    hintColor: Colors.black,
+    splashColor: background,
     colorScheme: ColorScheme.light(
       background: background,
       primary: primary,
@@ -19,21 +19,21 @@ class AppTheme {
     ),
     textTheme: TextTheme(
       headlineLarge: GoogleFonts.harmattan(
-          textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+          textStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.w700)),
       headlineMedium: GoogleFonts.harmattan(
-          textStyle: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w800)),
+          textStyle: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w800)),
       headlineSmall: GoogleFonts.harmattan(
-          textStyle: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)),
+          textStyle: const TextStyle(color: Colors.black87, fontSize: 22, fontWeight: FontWeight.w900)),
 
       titleLarge: GoogleFonts.harmattan(
-          textStyle: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700)),
+          textStyle: const TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w700)),
       titleMedium: GoogleFonts.harmattan(
-          textStyle: const TextStyle(color: Colors.white70, fontSize: 22, fontWeight: FontWeight.w600)),
-      titleSmall: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.white60)),
+          textStyle: const TextStyle(color: Colors.black87, fontSize: 22, fontWeight: FontWeight.w600)),
+      titleSmall: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.black87)),
 
-      bodyLarge: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.white)),
-      bodyMedium: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.white70)),
-      bodySmall: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.white60)),
+      bodyLarge: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.black)),
+      bodyMedium: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.black87)),
+      bodySmall: GoogleFonts.harmattan(textStyle: const TextStyle(color: Colors.black87)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -41,12 +41,11 @@ class AppTheme {
       elevation: 8,
       shadowColor: primary,
       backgroundColor: primary,
-      textStyle:
-          GoogleFonts.roboto(textStyle: const TextStyle(color: Colors.white)),
+      textStyle: GoogleFonts.roboto(textStyle: const TextStyle(color: Colors.white)),
     )),
     cardTheme: CardTheme(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 4,
       shadowColor: Colors.black,
       color: canvas,
     ),

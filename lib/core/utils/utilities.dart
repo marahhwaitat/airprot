@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../global/global.dart';
+
 // import 'package:fluttertoast/fluttertoast.dart';
 //
 // class Helper{
@@ -20,4 +22,11 @@ extension ContextEx on BuildContext
   {
     return Theme.of(this).textTheme;
   }
+}
+
+bool existingPassenger(String passportNum){
+  myPassengers.map((passenger) {
+    if(passportNum == passenger.passportNum) return true;
+  });
+  return false;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/login_screen.dart';
+import '../screens/login/passenger_login.dart';
 
 
 class LevelCard extends StatelessWidget {
@@ -15,7 +15,7 @@ class LevelCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const LoginScreen()));
+              builder: (context) => const PassengerLogin()));
       },
       child: Card(
         child: Padding(

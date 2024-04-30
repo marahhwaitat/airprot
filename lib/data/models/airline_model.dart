@@ -11,7 +11,7 @@ class Airline {
 
   factory Airline.fromMap(Map<String, dynamic> map, String id) {
     return Airline(
-      id: map['id'] ?? '',
+      id: id,
       name: map['name'] ?? '',
       flightIds: map['flightIds'] ?? []
     );
