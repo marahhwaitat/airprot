@@ -6,4 +6,6 @@ import '../../data/models/passenger_model.dart';
 
 List<Passenger> myPassengers = [];
 List<Flight> myFlights = [];
-List<Airline> myAirlines = [];
+List<Airline> myAirlines = [Airline(
+  id: '', name: 'name', flightIds: []
+)];
