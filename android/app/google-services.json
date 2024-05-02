@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1068266699479",
+    "project_id": "airport-fe47a",
+    "storage_bucket": "airport-fe47a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068266699479:android:7a4d6be489574b2e87ce92",
+        "android_client_info": {
+          "package_name": "com.example.airprot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqCBMODjkn_bGqocttHIxtOqfolxW2cKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

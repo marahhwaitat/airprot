@@ -112,8 +112,7 @@ class _AdminLoginState extends State<AdminLogin> {
                         child: ElevatedButton(
                           onPressed: (){
                             if (_formKey.currentState!.validate()) {
-                              try{
-                                AuthFirebaseManger.login(
+                              AuthFirebaseManger.login(
                                     widget.airport, _userNameController.text, _passwordController.text)
                                     .then((value) {
                                       if(value){
@@ -128,12 +127,11 @@ class _AdminLoginState extends State<AdminLogin> {
                                           _errorMessage = 'User Name or Password not not correct';
                                         });
                                       }
+                                }).catchError((e){
+                                  setState((){
+                                    _errorMessage = e.toString();
+                                  });
                                 });
-                              }catch(e){
-                                setState((){
-                                  _errorMessage = e.toString();
-                                });
-                              }
                             }
                           },
                           child: Text('Login',

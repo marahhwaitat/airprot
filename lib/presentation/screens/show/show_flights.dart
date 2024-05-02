@@ -31,7 +31,9 @@ class ShowFlights extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
+      body: airline.flightIds.isEmpty?
+        Center(child: Text('empty', style: context.getThemeTextStyle().headlineMedium)):
+        ListView.builder(
         itemCount: airline.flightIds.length,
         itemBuilder: (ctx, index) => GestureDetector(
           onTap: (){

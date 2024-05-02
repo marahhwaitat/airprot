@@ -16,7 +16,7 @@ class SplashScreen extends StatelessWidget {
     return AnimatedSplashScreen(
       duration: 1000,
       splashIconSize: size.height,
-      splash: Lottie.asset('assets/lottie/plane.json',
+      splash: Lottie.asset('assets/lottie/login.json',
           width: size.width ,height: size.height * 0.4,
       ),
       nextScreen: const Home(),
