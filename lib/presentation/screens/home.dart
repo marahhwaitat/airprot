@@ -1,6 +1,10 @@
-import 'package:airprot/core/utils/utilities.dart';
+import 'package:airport/core/global/global.dart';
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/flight/flight_bloc.dart';
+import '../../bloc/passenger/passenger_bloc.dart';
 import 'login/passenger_login.dart';
 import 'login/admin_login.dart';
 
@@ -34,34 +38,41 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(height: size.height * 0.1),
 
-            _difficultyButton(size, 0, 'Passenger', Colors.green),
+            SizedBox(
+              width: size.width,
+              height: size.height * 0.08,
+              child: ElevatedButton(
+                onPressed: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
+                    )),
+                child:  Text('Passenger',style: context.getThemeTextStyle().titleLarge),
+              ),
+            ),
             SizedBox(height: size.height * 0.01),
-            _difficultyButton(size, 1, 'Airline', Theme.of(context).canvasColor),
+            SizedBox(
+              width: size.width,
+              height: size.height * 0.08,
+              child: ElevatedButton(
+                onPressed: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: false),
+                )),
+                child:  Text('Airline',style: context.getThemeTextStyle().titleLarge),
+              ),
+            ),
             SizedBox(height: size.height * 0.01),
-            _difficultyButton(size, 2, 'Airport', Theme.of(context).primaryColor),
+            SizedBox(
+              width: size.width,
+              height: size.height * 0.08,
+              child: ElevatedButton(
+                onPressed: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: true),
+                    )),
+                child:  Text('Airport',style: context.getThemeTextStyle().titleLarge),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  _navigate(int user) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => user == 0? const PassengerLogin()
-      : user == 1? const AdminLogin(airport: false) : const AdminLogin(airport: true),
-    ));
-  }
-
-  Widget _difficultyButton(Size size, int user, String text, Color color) => SizedBox(
-    width: size.width,
-    height: size.height * 0.08,
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-      ),
-      onPressed: () => _navigate(user),
-      child:  Text(text,style: context.getThemeTextStyle().titleLarge),
-    ),
-  );
-
 }

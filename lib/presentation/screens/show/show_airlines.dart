@@ -1,6 +1,10 @@
+import 'package:airport/bloc/passenger/passenger_bloc.dart';
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+import '../../../bloc/flight/flight_bloc.dart';
 import '../../../core/global/global.dart';
 import 'show_flights.dart';
 
@@ -12,28 +16,31 @@ class ShowAirlines extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text('Airlines'),
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        itemCount: myAirlines.length,
-        itemBuilder: (ctx, index) => GestureDetector(
-          onTap: (){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ShowFlights(airline: myAirlines[index])));
-          },
-          child: Card(
-            child: ListTile(
-              leading: const Icon(Icons.airplanemode_active),
-              title: Text(myAirlines[index].name, style: Theme.of(context).textTheme.titleLarge,),
-              trailing: const Icon(Icons.arrow_forward_ios),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Text('Airlines'),
+          centerTitle: true,
+        ),
+        body: //state.runtimeType == FetchPassengersSuccessfulState?
+        myAirlines.isNotEmpty?
+        ListView.builder(
+          itemCount: myAirlines.length,
+          itemBuilder: (ctx, index) => GestureDetector(
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ShowFlights(airline: myAirlines[index])));
+            },
+            child: Card(
+              child: ListTile(
+                leading: const Icon(Icons.airplanemode_active),
+                title: Text(myAirlines[index].name, style: Theme.of(context).textTheme.titleLarge,),
+                trailing: const Icon(Icons.arrow_forward_ios),
+              ),
             ),
           ),
-        ),
-        padding: EdgeInsets.all(size.height * 0.02),
-      ),
+          padding: EdgeInsets.all(size.height * 0.02),
+        ): Center(child: Text('empty', style: context.getThemeTextStyle().headlineMedium))
+            //: const Center(child: CircularProgressIndicator())
     );
   }
 }

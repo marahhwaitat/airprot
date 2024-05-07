@@ -1,4 +1,4 @@
-import 'package:airprot/core/utils/utilities.dart';
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -115,11 +115,14 @@ class _AdminLoginState extends State<AdminLogin> {
                               AuthFirebaseManger.login(
                                     widget.airport, _userNameController.text, _passwordController.text)
                                     .then((value) {
-                                      if(value){
+                                      if(value != null){
                                       Navigator.pushReplacement(context,
                                         MaterialPageRoute(builder: (context) => widget.airport?
                                           const ShowAirlines():
-                                          ShowFlights(airline: myAirlines[0], isAirline: false),
+                                          ShowFlights(
+                                            airline: myAirlines.firstWhere((airline) => airline.id == value),
+                                            isAirline: false
+                                          ),
                                         ));
                                       }
                                       else{

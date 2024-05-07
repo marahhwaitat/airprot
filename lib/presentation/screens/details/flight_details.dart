@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:airprot/core/utils/utilities.dart';
-import 'package:airprot/presentation/screens/add/add_passenger.dart';
+import 'package:airport/core/utils/utils.dart';
+import 'package:airport/presentation/screens/add/add_passenger.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';

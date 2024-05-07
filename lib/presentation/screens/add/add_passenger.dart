@@ -20,7 +20,7 @@ class _AddPassengerState extends State<AddPassenger> {
   final _passengerNameController = TextEditingController();
   final _passportNumController = TextEditingController();
 
-  String _selectedClass = 'class';
+  String _selectedClass = 'A';
   final _satNumController = TextEditingController();
 
 
@@ -270,7 +270,7 @@ class _AddPassengerState extends State<AddPassenger> {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Passenger added successfully'), duration: Duration(seconds: 1)),
+          const SnackBar(content: Text('Passenger added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
       _clearFields();

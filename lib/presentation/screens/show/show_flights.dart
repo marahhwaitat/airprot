@@ -1,5 +1,5 @@
-import 'package:airprot/core/utils/colors.dart';
-import 'package:airprot/core/utils/utilities.dart';
+import 'package:airport/core/utils/colors.dart';
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/global/global.dart';
@@ -25,7 +25,7 @@ class ShowFlights extends StatelessWidget {
           if(!isAirline)TextButton(
             onPressed: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddFlight()));
+                  MaterialPageRoute(builder: (context) => AddFlight(airlineId: airline.id)));
             },
             child: Text('Add Flight', style: TextStyle(color: primary),),
           ),
@@ -34,27 +34,27 @@ class ShowFlights extends StatelessWidget {
       body: airline.flightIds.isEmpty?
         Center(child: Text('empty', style: context.getThemeTextStyle().headlineMedium)):
         ListView.builder(
-        itemCount: airline.flightIds.length,
-        itemBuilder: (ctx, index) => GestureDetector(
-          onTap: (){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => FlightDetails(
-                  airlineId: airline.id,
-                  flightId: airline.flightIds[index],
-                )));
-          },
-          child: Card(
-            child: ListTile(
-              leading: const Icon(Icons.airplane_ticket),
-              title: Text(
-                '${myFlights.firstWhere((flight) => flight.flightId == airline.flightIds[index]).flightNum}',
-                style: context.getThemeTextStyle().titleLarge,
+          itemCount: airline.flightIds.length,
+          itemBuilder: (ctx, index) => GestureDetector(
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FlightDetails(
+                    airlineId: airline.id,
+                    flightId: airline.flightIds[index],
+                  )));
+            },
+            child: Card(
+              child: ListTile(
+                leading: const Icon(Icons.airplane_ticket),
+                title: Text(
+                  '${myFlights.firstWhere((flight) => flight.flightId == airline.flightIds[index]).flightNum}',
+                  style: context.getThemeTextStyle().titleLarge,
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios),
               ),
-              trailing: const Icon(Icons.arrow_forward_ios),
             ),
           ),
-        ),
-        padding: EdgeInsets.all(size.height * 0.02),
+          padding: EdgeInsets.all(size.height * 0.02),
       ),
     );
   }

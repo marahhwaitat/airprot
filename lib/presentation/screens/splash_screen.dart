@@ -1,13 +1,31 @@
+import 'package:airport/core/global/global.dart';
 import 'package:flutter/material.dart';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../../bloc/flight/flight_bloc.dart';
+import '../../bloc/passenger/passenger_bloc.dart';
+import '../../core/utils/utils.dart';
 import 'home.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPassengersEvent();
+    fetchFlightsEvent();
+  }
 
   @override
   Widget build(BuildContext context) {

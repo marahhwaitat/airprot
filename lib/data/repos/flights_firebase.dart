@@ -6,8 +6,7 @@ class FlightsFirebaseManger {
   static Future<List<Flight>> getFlights() async {
     QuerySnapshot snapshots;
     try {
-      snapshots =
-          await FirebaseFirestore.instance.collection('Flights').get();
+      snapshots = await FirebaseFirestore.instance.collection('Flights').get();
 
       List<Flight> flight = [];
       Map<String, dynamic> map;
@@ -19,17 +18,32 @@ class FlightsFirebaseManger {
       }
 
       return flight;
-    } on FirebaseException {
-      throw Exception();
+    } catch(e) {
+      rethrow;
     }
   }
 
-  static Future<void> updateFlights(Flight flight) async {
+  static Future<void> updateFlight(Flight flight) async {
     try {
       await FirebaseFirestore.instance.collection('Flights')
           .doc(flight.flightId).update(Flight.toMap(flight));
-    } on FirebaseException {
-      throw Exception();
+    } catch(e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> uploadFlight(Flight flight) async {
+
+    try {
+
+      CollectionReference flightCollection =
+      FirebaseFirestore.instance.collection('Flights');
+
+      //add flight
+      await flightCollection.add(Flight.toMap(flight));
+
+    } catch (e) {
+      rethrow;
     }
   }
 

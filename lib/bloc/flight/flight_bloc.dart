@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:airprot/core/global/global.dart';
+import 'package:airport/core/global/global.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 import '../../data/models/flight_model.dart';
+import '../../data/repos/airlines_firebase.dart';
 import '../../data/repos/flights_firebase.dart';
 
 part 'flight_event.dart';
@@ -21,7 +22,13 @@ class FlightBloc extends Bloc<FlightEvent, FlightState> {
 
     emit(FlightsLoadingState());
     try {
+      debugPrint('before myAirlines: $myAirlines');
+      myAirlines = await AirlinesFirebaseManger.getAirlines();
+      debugPrint('myAirlines: $myAirlines');
+
+      debugPrint('before myFlights: $myFlights');
       myFlights = await FlightsFirebaseManger.getFlights();
+      debugPrint('myFlights: $myFlights');
       emit(FlightsSuccessfulState());
     } catch (e) {
       emit(FlightsErrorState(error: e.toString()));
@@ -33,8 +40,13 @@ class FlightBloc extends Bloc<FlightEvent, FlightState> {
 
     emit(FlightsLoadingState());
     try {
-      await FlightsFirebaseManger.updateFlights(event.flight);
-      myFlights = await FlightsFirebaseManger.getFlights();
+      await FlightsFirebaseManger.updateFlight(event.flight);
+
+      myAirlines = await AirlinesFirebaseManger.getAirlines();
+      debugPrint('myAirlines: $myAirlines');
+
+      await FlightsFirebaseManger.updateFlight(event.flight);
+
       emit(FlightsSuccessfulState());
     } catch (e) {
       emit(FlightsErrorState(error: e.toString()));

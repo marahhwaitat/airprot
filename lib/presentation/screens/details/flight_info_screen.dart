@@ -24,9 +24,11 @@ class FlightInfoScreenState extends State<FlightInfoScreen> {
   @override
   void initState() {
     super.initState();
-    // Start the timer
     _passenger = myPassengers.firstWhere((passenger) => passenger.passportNum == widget.passportNum);
+    debugPrint('_passenger: $_passenger');
     _flight = myFlights.firstWhere((flight) => flight.flightId == _passenger.flightId);
+    debugPrint('_flight: $_flight');
+    // Start the timer
     _startTimer();
   }
 

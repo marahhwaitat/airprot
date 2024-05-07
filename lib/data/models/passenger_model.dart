@@ -23,7 +23,7 @@ class Passenger {
     return Passenger(
       airlineId: map['airlineId'] ?? '',
       flightId: map['flightId'] ?? '',
-      passengerId: map['passengerId'] ?? '',
+      passengerId: id,
       passengerName: map['passengerName'] ?? '',
       passportNum: map['passportNum'] ?? '',
       classType: map['classType'] ?? '',
@@ -34,7 +34,6 @@ class Passenger {
   static Map<String, dynamic> toMap(Passenger passenger) => {
     'airlineId': passenger.airlineId,
     'flightId': passenger.flightId,
-    'passengerId': passenger.passengerId,
     'passengerName': passenger.passengerName,
     'passportNum': passenger.passportNum,
     'classType': passenger.classType,

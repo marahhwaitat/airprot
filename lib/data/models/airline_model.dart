@@ -13,7 +13,7 @@ class Airline {
     return Airline(
       id: id,
       name: map['name'] ?? '',
-      flightIds: map['flightIds'] ?? []
+      flightIds: List<String>.from(map['flightIds'] ?? const [])
     );
   }
 

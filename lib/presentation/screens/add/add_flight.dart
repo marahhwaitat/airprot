@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../data/models/flight_model.dart';
+import '../../../data/repos/flights_firebase.dart';
 
 class AddFlight extends StatefulWidget {
-  const AddFlight({super.key});
+  final String airlineId;
+  const AddFlight({super.key, required this.airlineId});
 
   @override
   State<AddFlight> createState() => _AddFlightState();
@@ -21,6 +21,12 @@ class _AddFlightState extends State<AddFlight> {
 
   final _originController = TextEditingController();
   final _destinationController = TextEditingController();
+
+  DateTime? departureTime;
+  DateTime? arrivalTime;
+
+  DateTime? openGateTime;
+  DateTime? closeGateTime;
 
 
   bool _uploading = false;
@@ -159,7 +165,7 @@ class _AddFlightState extends State<AddFlight> {
                           labelText: 'Destination',
                           labelStyle: Theme.of(context).textTheme.bodySmall,
                           prefixIcon: Icon(
-                            Icons.question_mark,
+                            Icons.location_on,
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
@@ -178,13 +184,12 @@ class _AddFlightState extends State<AddFlight> {
                               height: size.height * 0.08,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  backgroundColor: Theme.of(context).hintColor,
-                                  elevation: 0,
-                                  side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.6), ),
+                                  backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {},//=> val.selectTime(context),
+                                onPressed: () async {
+                                  departureTime = await selectDate(context);
+                                },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(
                                   'departure Time',
@@ -199,16 +204,15 @@ class _AddFlightState extends State<AddFlight> {
                               height: size.height * 0.08,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  backgroundColor: Theme.of(context).hintColor,
-                                  elevation: 0,
-                                  side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.6), ),
+                                  backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {},//=> val.selectTime(context),
+                                onPressed: () async {
+                                  arrivalTime = await selectDate(context);
+                                },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(
-                                  'departure Time',
+                                  'arrival Time',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -226,16 +230,15 @@ class _AddFlightState extends State<AddFlight> {
                               height: size.height * 0.08,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  backgroundColor: Theme.of(context).hintColor,
-                                  elevation: 0,
-                                  side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.6), ),
+                                  backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {},//=> val.selectTime(context),
-                                icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+                                onPressed: () async {
+                                  openGateTime = await selectDate(context);
+                                },
+                                icon: Icon(Icons.door_front_door_outlined, color: Theme.of(context).primaryColor),
                                 label: Text(
-                                  'departure Time',
+                                  'open Gate Time',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -247,16 +250,15 @@ class _AddFlightState extends State<AddFlight> {
                               height: size.height * 0.08,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  backgroundColor: Theme.of(context).hintColor,
-                                  elevation: 0,
-                                  side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.6), ),
+                                  backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {},//=> val.selectTime(context),
-                                icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
+                                onPressed: () async {
+                                  closeGateTime = await selectDate(context);
+                                },
+                                icon: Icon(Icons.door_front_door, color: Theme.of(context).primaryColor),
                                 label: Text(
-                                  'departure Time',
+                                  'close Gate Time',
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -313,15 +315,14 @@ class _AddFlightState extends State<AddFlight> {
                                           if (!_formKey.currentState!
                                               .validate()
                                           ) {
-                                            setState(() {
-                                              _errorMessage =
-                                                  'please add data first';
-                                            });
-                                          } else {
+                                            setState(() => _errorMessage = 'please add data first');
+                                          } else if(departureTime == null || arrivalTime == null
+                                          || openGateTime == null || closeGateTime == null){
+                                            setState(() => _errorMessage = 'please enter dates');
+                                          }
+                                          else {
                                             // Set `_uploading` to true before starting the upload
-                                            setState(() {
-                                              _uploading = true;
-                                            });
+                                            setState(() =>_uploading = true);
 
                                             // Call the function to upload data
                                             await uploadFlight(context);
@@ -358,28 +359,49 @@ class _AddFlightState extends State<AddFlight> {
 
     try {
 
-      CollectionReference questionCollection =
-          FirebaseFirestore.instance.collection('');
-
-      //add question
-      await questionCollection.doc('Flights').set(Flight.toMap(Flight(
-        airlineId: '',
-        origin: _originController.text,
-        destination: _destinationController.text,
+      //upload Flight
+      await FlightsFirebaseManger.uploadFlight(Flight(
+        airlineId: widget.airlineId,
         flightNum: int.parse(_flightNumController.text),
         gateNum: int.parse(_gateNumController.text),
+        origin: _originController.text,
+        destination: _destinationController.text,
+
+        departureTime: departureTime,
+        arrivalTime: arrivalTime,
+        openGateTime: openGateTime,
+        closeGateTime: closeGateTime,
+
         passengerIds: []
-      )));
+      ));
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Flight added successfully'), duration: Duration(seconds: 1)),
+          const SnackBar(content: Text('Flight added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
       _clearFields();
     } catch (e) {
       _errorMessage = 'Error: $e';
     }
+  }
+
+  //date
+  DateTime _selectedDate = DateTime.now();
+
+  Future<DateTime> selectDate(BuildContext context) async {
+    await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    ).then((selectedDate) async {
+      showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
+      ).then((selectedTime){
+        _selectedDate = selectedDate!.add(Duration(hours: selectedTime!.hour, minutes: selectedTime.minute));
+      });
+    });
+    return _selectedDate;
   }
 
   void _clearFields() {

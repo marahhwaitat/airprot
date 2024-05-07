@@ -35,7 +35,7 @@ class Flight {
   factory Flight.fromMap(Map<String, dynamic> map, String id) {
     return Flight(
         airlineId: map['airlineId'] ?? '',
-        flightId: map['flightId'] ?? '',
+        flightId: id,
         flightNum: map['flightNum'] ?? 0,
         gateNum: map['gateNum'] ?? 0,
         origin: map['origin'] ?? '',
@@ -48,7 +48,7 @@ class Flight {
             ? DateTime.now() : DateTime.parse(map['openGateTime'] as String),
         closeGateTime: map['closeGateTime'] == null
             ? DateTime.now() : DateTime.parse(map['closeGateTime'] as String),
-        passengerIds: map['passengerIds'] ?? const [],
+        passengerIds: List<String>.from(map['passengerIds'] ?? const []),
     );
   }
 

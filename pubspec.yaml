@@ -1,4 +1,4 @@
-name: airprot
+name: airport
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -19,7 +19,6 @@ dependencies:
 
   bloc: ^8.1.4
   flutter_bloc: ^8.1.5
-  meta: ^1.11.0
 
   google_fonts:
 

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:airprot/core/global/global.dart';
+import 'package:airport/core/global/global.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 import '../../data/repos/passengers_firebase.dart';
 
@@ -20,6 +20,8 @@ class PassengerBloc extends Bloc<PassengerEvent, PassengerState> {
     emit(FetchPassengersLoadingState());
     try {
       myPassengers = await PassengersFirebaseManger.getPassengers();
+      debugPrint('myPassengers: $myPassengers');
+
       emit(FetchPassengersSuccessfulState());
     } catch (e) {
       emit(FetchPassengersErrorState(error: e.toString()));

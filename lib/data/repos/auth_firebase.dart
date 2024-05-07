@@ -2,19 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class AuthFirebaseManger {
-  static Future<bool> login(bool airport, String userName, String password) async {
+  static Future<String?> login(bool airport, String userName, String password) async {
     DocumentSnapshot snapshots;
     try {
-      snapshots =
-      await FirebaseFirestore.instance.collection('Auth')
+      snapshots = await FirebaseFirestore.instance.collection('Auth')
           .doc(airport? 'Airport' : 'Airline').get();
 
-
       Map<String, dynamic> map = snapshots.data() as Map<String, dynamic>;
-      return map[userName] == password;
+      return map[userName] == password? airport? '' :  map['id'] as String : null;
 
-    } on FirebaseException {
-      throw Exception();
+    } catch(e) {
+      rethrow;
     }
   }
 }
