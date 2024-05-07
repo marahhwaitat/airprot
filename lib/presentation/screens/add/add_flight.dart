@@ -1,4 +1,6 @@
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../data/models/flight_model.dart';
 import '../../../data/repos/flights_firebase.dart';
@@ -191,8 +193,8 @@ class _AddFlightState extends State<AddFlight> {
                                   departureTime = await selectDate(context);
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-                                label: Text(
-                                  'departure Time',
+                                label: Text(departureTime == null? 'Departure Time'
+                                    : DateFormat('dd/MM,  HH:mm a').format(departureTime!),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -211,8 +213,8 @@ class _AddFlightState extends State<AddFlight> {
                                   arrivalTime = await selectDate(context);
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-                                label: Text(
-                                  'arrival Time',
+                                label: Text(arrivalTime == null? 'Arrival Time'
+                                    : DateFormat('dd/MM,  HH:mm a').format(arrivalTime!),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -234,11 +236,11 @@ class _AddFlightState extends State<AddFlight> {
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
                                 onPressed: () async {
-                                  openGateTime = await selectDate(context);
+                                  openGateTime = await selectTime(context);
                                 },
                                 icon: Icon(Icons.door_front_door_outlined, color: Theme.of(context).primaryColor),
-                                label: Text(
-                                  'open Gate Time',
+                                label: Text( openGateTime == null? 'open Gate Time'
+                                    : DateFormat('HH:mm a').format(openGateTime!),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -254,11 +256,11 @@ class _AddFlightState extends State<AddFlight> {
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
                                 onPressed: () async {
-                                  closeGateTime = await selectDate(context);
+                                  closeGateTime = await selectTime(context);
                                 },
                                 icon: Icon(Icons.door_front_door, color: Theme.of(context).primaryColor),
-                                label: Text(
-                                  'close Gate Time',
+                                label: Text( closeGateTime == null? 'close Gate Time'
+                                  : DateFormat('HH:mm a').format(closeGateTime!),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -380,6 +382,7 @@ class _AddFlightState extends State<AddFlight> {
           const SnackBar(content: Text('Flight added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
+      await fetchFlightsEvent();
       _clearFields();
     } catch (e) {
       _errorMessage = 'Error: $e';
@@ -400,6 +403,14 @@ class _AddFlightState extends State<AddFlight> {
       ).then((selectedTime){
         _selectedDate = selectedDate!.add(Duration(hours: selectedTime!.hour, minutes: selectedTime.minute));
       });
+    });
+    return _selectedDate;
+  }
+
+  Future<DateTime> selectTime(BuildContext context) async {
+    showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
+      ).then((selectedTime){
+        _selectedDate = departureTime!.copyWith(hour: selectedTime!.hour, minute: selectedTime.minute);
     });
     return _selectedDate;
   }

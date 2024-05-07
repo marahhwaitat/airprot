@@ -86,13 +86,11 @@ class _PassengerLoginState extends State<PassengerLogin> {
                         child: ElevatedButton(
                           onPressed: (){
                             if (_formKey.currentState!.validate()) {
-                              if(true || existingPassenger(_passportController.text)) {
+                              if(existingPassenger(_passportController.text)) {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                     FlightInfoScreen(passportNum: _passportController.text)));
                               } else {
-                                setState(() {
-                                  _errorMessage = 'Passenger Not Fount';
-                                });
+                                setState(() => _errorMessage = 'Passenger Not Fount');
                               }}
                           },
                           child: Text('Find', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),),

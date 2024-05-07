@@ -13,12 +13,12 @@ extension ContextEx on BuildContext
   }
 }
 
-bool existingPassenger(String passportNum){
-  myPassengers.map((passenger) {
+bool existingPassenger(String passportNum) {
+  for (var passenger in myPassengers) {
     debugPrint('passportNum: ${passenger.passportNum}');
     debugPrint('passportNum: ${passenger.passportNum == passportNum}');
     if(passenger.passportNum == passportNum) return true;
-  });
+  }
   return false;
 }
 

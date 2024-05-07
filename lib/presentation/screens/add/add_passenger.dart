@@ -1,3 +1,4 @@
+import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/colors.dart';
@@ -273,6 +274,7 @@ class _AddPassengerState extends State<AddPassenger> {
           const SnackBar(content: Text('Passenger added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
+      await fetchPassengersEvent();
       _clearFields();
     } catch (e) {
       _errorMessage = 'Error: $e';
@@ -283,7 +285,7 @@ class _AddPassengerState extends State<AddPassenger> {
     _passengerNameController.clear();
     _passportNumController.clear();
     _satNumController.clear();
-    _selectedClass = 'class';
+    _selectedClass = 'A';
     _errorMessage = null;
 
   }
