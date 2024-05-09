@@ -21,4 +21,15 @@ class AirlinesFirebaseManger {
       throw Exception();
     }
   }
+
+  static Future<void> addFlightId(String airlineId, String flightId) async {
+    try {
+
+      FirebaseFirestore.instance.collection('Airlines').doc(airlineId).update({
+        'flightIds': FieldValue.arrayUnion([flightId])
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

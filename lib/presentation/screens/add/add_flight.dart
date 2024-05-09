@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/models/flight_model.dart';
+import '../../../data/repos/airlines_firebase.dart';
 import '../../../data/repos/flights_firebase.dart';
 
 class AddFlight extends StatefulWidget {
@@ -189,8 +190,8 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () async {
-                                  departureTime = await selectDate(context);
+                                onPressed: () {
+                                  setState(() async => departureTime = await selectDate(context));
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(departureTime == null? 'Departure Time'
@@ -209,8 +210,8 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () async {
-                                  arrivalTime = await selectDate(context);
+                                onPressed: () {
+                                  setState(() async => arrivalTime = await selectDate(context));
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(arrivalTime == null? 'Arrival Time'
@@ -235,8 +236,8 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () async {
-                                  openGateTime = await selectTime(context);
+                                onPressed: () {
+                                  setState(() async => openGateTime = await selectTime(context));
                                 },
                                 icon: Icon(Icons.door_front_door_outlined, color: Theme.of(context).primaryColor),
                                 label: Text( openGateTime == null? 'open Gate Time'
@@ -255,8 +256,8 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () async {
-                                  closeGateTime = await selectTime(context);
+                                onPressed: () {
+                                  setState(() async => closeGateTime = await selectTime(context));
                                 },
                                 icon: Icon(Icons.door_front_door, color: Theme.of(context).primaryColor),
                                 label: Text( closeGateTime == null? 'close Gate Time'
@@ -362,7 +363,7 @@ class _AddFlightState extends State<AddFlight> {
     try {
 
       //upload Flight
-      await FlightsFirebaseManger.uploadFlight(Flight(
+      String flightId = await FlightsFirebaseManger.uploadFlight(Flight(
         airlineId: widget.airlineId,
         flightNum: int.parse(_flightNumController.text),
         gateNum: int.parse(_gateNumController.text),
@@ -377,12 +378,15 @@ class _AddFlightState extends State<AddFlight> {
         passengerIds: []
       ));
 
+      await AirlinesFirebaseManger.addFlightId(widget.airlineId, flightId);
+
+      await fetchFlightsEvent();
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Flight added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
-      await fetchFlightsEvent();
       _clearFields();
     } catch (e) {
       _errorMessage = 'Error: $e';

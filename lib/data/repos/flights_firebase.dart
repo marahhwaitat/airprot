@@ -32,7 +32,7 @@ class FlightsFirebaseManger {
     }
   }
 
-  static Future<void> uploadFlight(Flight flight) async {
+  static Future<String> uploadFlight(Flight flight) async {
 
     try {
 
@@ -40,8 +40,20 @@ class FlightsFirebaseManger {
       FirebaseFirestore.instance.collection('Flights');
 
       //add flight
-      await flightCollection.add(Flight.toMap(flight));
+      DocumentReference documentReference = await flightCollection.add(Flight.toMap(flight));
+      return documentReference.id;
 
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<void> addPassengerId(String flightId, String passengerId) async {
+    try {
+
+      FirebaseFirestore.instance.collection('Flights').doc(flightId).update({
+        'passengerIds': FieldValue.arrayUnion([passengerId])
+      });
     } catch (e) {
       rethrow;
     }

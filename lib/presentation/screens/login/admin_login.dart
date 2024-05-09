@@ -38,6 +38,11 @@ class _AdminLoginState extends State<AdminLogin> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(widget.airport? 'Airport Login': 'Airline Login'),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(size.height * 0.02),

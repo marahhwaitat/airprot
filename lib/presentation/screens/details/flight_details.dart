@@ -67,31 +67,33 @@ class FlightDetailsState extends State<FlightDetails> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(size.height * 0.02),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle(size, 'Flight Details'),
-            _buildInfoTable([
-              {'label': 'Departure Time',
-                'value': DateFormat('dd/MM,  HH:mm a').format(flight.departureTime!)},
-              {'label': 'Arrival Time',
-                'value': DateFormat('dd/MM,  HH:mm a').format(flight.arrivalTime!)},
-              {'label': 'Gate Number', 'value': '${flight.gateNum}'},
-              {'label': 'Open Gate Time',
-                'value': DateFormat('HH:mm a').format(flight.openGateTime!)},
-              {'label': 'Close Gate Time',
-                'value': DateFormat('HH:mm a').format(flight.closeGateTime!)},
-              {'label': 'Remaining Time', 'value': _formatRemainingTime(remainingTime), 'color': ''},
-            ]),
-            SizedBox(height: size.height * 0.02),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(size.height * 0.02),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(size, 'Flight Details'),
+              _buildInfoTable([
+                {'label': 'Departure Time',
+                  'value': DateFormat('dd/MM,  HH:mm a').format(flight.departureTime!)},
+                {'label': 'Arrival Time',
+                  'value': DateFormat('dd/MM,  HH:mm a').format(flight.arrivalTime!)},
+                {'label': 'Gate Number', 'value': '${flight.gateNum}'},
+                {'label': 'Open Gate Time',
+                  'value': DateFormat('HH:mm a').format(flight.openGateTime!)},
+                {'label': 'Close Gate Time',
+                  'value': DateFormat('HH:mm a').format(flight.closeGateTime!)},
+                {'label': 'Remaining Time', 'value': _formatRemainingTime(remainingTime), 'color': ''},
+              ]),
+              SizedBox(height: size.height * 0.02),
 
-            _buildSectionTitle(size, 'Passengers Details'),
-            SizedBox(height: size.height * 0.02),
+              _buildSectionTitle(size, 'Passengers Details'),
+              SizedBox(height: size.height * 0.02),
 
-            ...flight.passengerIds.map((passengerId) => _buildPassengerInfoTable(size, passengerId)),
-          ],
+              ...flight.passengerIds.map((passengerId) => _buildPassengerInfoTable(size, passengerId)),
+            ],
+          ),
         ),
       ),
     );

@@ -22,15 +22,16 @@ class PassengersFirebaseManger {
     }
   }
 
-  static Future uploadPassenger(Passenger passenger) async {
+  static Future<String> uploadPassenger(Passenger passenger) async {
 
     try {
 
       CollectionReference questionCollection =
       FirebaseFirestore.instance.collection('Passengers');
 
-      //add question
-      await questionCollection.add(Passenger.toMap(passenger));
+      //add Passengers
+      DocumentReference restaurantDocRef = await questionCollection.add(Passenger.toMap(passenger));
+      return restaurantDocRef.id;
 
     } catch (e) {
       rethrow;

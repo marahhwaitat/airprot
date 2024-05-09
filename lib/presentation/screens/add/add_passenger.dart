@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/utils/colors.dart';
 import '../../../data/models/passenger_model.dart';
+import '../../../data/repos/flights_firebase.dart';
 import '../../../data/repos/passengers_firebase.dart';
 
 class AddPassenger extends StatefulWidget {
@@ -260,7 +261,7 @@ class _AddPassengerState extends State<AddPassenger> {
   Future uploadPassenger(BuildContext context) async {
 
     try {
-      PassengersFirebaseManger.uploadPassenger(Passenger(
+      String passengerId = await PassengersFirebaseManger.uploadPassenger(Passenger(
         airlineId: widget.airlineId,
         flightId: widget.flightId,
         passengerName: _passengerNameController.text,
@@ -269,12 +270,15 @@ class _AddPassengerState extends State<AddPassenger> {
         satNum: int.parse(_satNumController.text)
       ));
 
+      await FlightsFirebaseManger.addPassengerId(widget.flightId, passengerId);
+
+      await fetchPassengersEvent();
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Passenger added successfully'), duration: Duration(milliseconds: 200)),
         );
       }
-      await fetchPassengersEvent();
       _clearFields();
     } catch (e) {
       _errorMessage = 'Error: $e';

@@ -6,6 +6,7 @@ import '../../../core/global/global.dart';
 import '../../../data/models/airline_model.dart';
 import '../add/add_flight.dart';
 import '../details/flight_details.dart';
+import '../edit/edit_flight.dart';
 
 class ShowFlights extends StatelessWidget {
   final Airline airline;
@@ -38,7 +39,12 @@ class ShowFlights extends StatelessWidget {
           itemBuilder: (ctx, index) => GestureDetector(
             onTap: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FlightDetails(
+                  MaterialPageRoute(builder: (context) => isAirline?
+                      EditFlight(
+                        airlineId: airline.id,
+                        flightId: airline.flightIds[index],
+                      ) :
+                      FlightDetails(
                     airlineId: airline.id,
                     flightId: airline.flightIds[index],
                   )));

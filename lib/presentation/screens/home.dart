@@ -1,10 +1,7 @@
-import 'package:airport/core/global/global.dart';
 import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
-import '../../bloc/flight/flight_bloc.dart';
-import '../../bloc/passenger/passenger_bloc.dart';
 import 'login/passenger_login.dart';
 import 'login/admin_login.dart';
 
@@ -32,9 +29,7 @@ class _HomeState extends State<Home> {
             SizedBox(height: size.height * 0.05),
             SizedBox(
               height: size.height * 0.3,
-              child: Image.asset('assets/images/logo.png',
-                width: size.width, fit: BoxFit.contain,
-              ),
+              child: Lottie.asset('assets/lottie/login.json', width: size.width),
             ),
             SizedBox(height: size.height * 0.1),
 

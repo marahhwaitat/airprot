@@ -1,10 +1,6 @@
-import 'package:airport/bloc/passenger/passenger_bloc.dart';
 import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-import '../../../bloc/flight/flight_bloc.dart';
 import '../../../core/global/global.dart';
 import 'show_flights.dart';
 
