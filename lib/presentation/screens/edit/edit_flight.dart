@@ -26,6 +26,9 @@ class EditFlightState extends State<EditFlight> {
 
   Duration? flightTime;
   Duration? gateTime;
+
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _gateNumController;
   
   bool _editing = false;
 
@@ -36,12 +39,14 @@ class EditFlightState extends State<EditFlight> {
     flightTime = flight.arrivalTime!.difference(flight.departureTime!);
     gateTime = flight.closeGateTime!.difference(flight.openGateTime!);
     remainingTime = flight.departureTime!.difference(DateTime.now()); // calc remaining time
+    _gateNumController = TextEditingController(text: flight.gateNum.toString());
     _startTimer();  // Start the timer
   }
 
   @override
   void dispose() {
     _timer.cancel(); // Cancel the timer when the widget is disposed
+    _gateNumController.dispose();
     super.dispose();
   }
 
@@ -135,7 +140,58 @@ class EditFlightState extends State<EditFlight> {
                     // arrival Time
                     _buildTableRow('Arrival Time', DateFormat('dd/MM,  HH:mm a').format(flight.arrivalTime!)),
                     // gate num
-                    _buildTableRow('Gate Number', '${flight.gateNum}'),
+                    TableRow(
+                      children: [
+                        const TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Gate Number',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: edited?
+                            SizedBox(
+                              height: size.height * 0.07,
+                              child: Form(
+                                key: _formKey,
+                                child: TextFormField(
+                                  controller: _gateNumController,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) => value == null || value.isEmpty ?
+                                  'Please Enter Gate Number': null,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    errorBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                                    ),
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                                    ),
+                                    hintText: 'Gate Number',
+                                    hintStyle: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ),
+                              ),
+                            ) :
+                            Text(
+                              '${flight.gateNum}',
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     // open gate
                     TableRow(
                       children: [
@@ -248,9 +304,11 @@ class EditFlightState extends State<EditFlight> {
                         height: size.height * 0.08,
                         child: ElevatedButton(
                           onPressed: _editing ? null : () async {
-                            setState(() =>_editing = true);
-                            await updateFlight(context);
-                            setState(() => _editing = false);
+                            if(!_formKey.currentState!.validate()){
+                              setState(() =>_editing = true);
+                              await updateFlight(context);
+                              setState(() => _editing = false);
+                            }
                             },
                           child: Text(
                             _editing ? 'editing...' : 'edited',
@@ -326,13 +384,16 @@ class EditFlightState extends State<EditFlight> {
   Future updateFlight(BuildContext context) async {
     try {
       //update Flight
+
+      flight.gateNum = int.parse(_gateNumController.text);
+
       await FlightsFirebaseManger.updateFlight(flight);
 
       await fetchFlightsEvent();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Flight updated successfully'), duration: Duration(milliseconds: 200)),
+          const SnackBar(content: Text('Flight updated successfully'), duration: Duration(seconds: 1)),
         );
       }
     } catch (e) {
