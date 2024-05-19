@@ -1,6 +1,6 @@
 class Passenger {
   String airlineId;
-  String flightId;
+  List<String> flightIds;
   String passengerId;
 
   String passengerName;
@@ -11,7 +11,7 @@ class Passenger {
 
   Passenger({
     this.airlineId = '',
-    this.flightId = '',
+    this.flightIds = const [],
     this.passengerId = '',
     this.passengerName = '',
     this.passportNum = '',
@@ -22,7 +22,7 @@ class Passenger {
   factory Passenger.fromMap(Map<String, dynamic> map, String id) {
     return Passenger(
       airlineId: map['airlineId'] ?? '',
-      flightId: map['flightId'] ?? '',
+      flightIds: List<String>.from(map['flightId'] ?? const []),
       passengerId: id,
       passengerName: map['passengerName'] ?? '',
       passportNum: map['passportNum'] ?? '',
@@ -33,7 +33,7 @@ class Passenger {
 
   static Map<String, dynamic> toMap(Passenger passenger) => {
     'airlineId': passenger.airlineId,
-    'flightId': passenger.flightId,
+    'flightId': passenger.flightIds,
     'passengerName': passenger.passengerName,
     'passportNum': passenger.passportNum,
     'classType': passenger.classType,

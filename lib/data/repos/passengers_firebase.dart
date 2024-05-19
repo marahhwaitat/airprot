@@ -37,4 +37,15 @@ class PassengersFirebaseManger {
       rethrow;
     }
   }
+
+  static Future<void> addFlightIdToPassenger(String passengerId, String flightId) async {
+    try {
+
+      FirebaseFirestore.instance.collection('Passengers').doc(passengerId).update({
+        'flightIds': FieldValue.arrayUnion([flightId])
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

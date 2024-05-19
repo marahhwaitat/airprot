@@ -1,9 +1,6 @@
 import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:lottie/lottie.dart';
-
 import '../../../core/global/global.dart';
 import '../../../data/repos/auth_firebase.dart';
 import '../show/show_airlines.dart';
@@ -54,7 +51,8 @@ class _AdminLoginState extends State<AdminLogin> {
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: Lottie.asset('assets/lottie/login.json')
+                  child: widget.airport?
+                  Image.asset('assets/images/airport.jpg') : Image.asset('assets/images/airline.jpg')
               ),
 
               Padding(

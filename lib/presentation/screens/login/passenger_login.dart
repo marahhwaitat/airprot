@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:lottie/lottie.dart';
-
 import '../../../core/utils/utils.dart';
-import '../details/flight_info_screen.dart';
+import '../details/passenger_details.dart';
 
 class PassengerLogin extends StatefulWidget {
   const PassengerLogin({super.key});
@@ -37,12 +35,23 @@ class _PassengerLoginState extends State<PassengerLogin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: size.height * 0.03),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: Theme.of(context).shadowColor,
+                ),
+              ),
+
               SizedBox(height: size.height * 0.02),
 
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: Lottie.asset('assets/lottie/login.json')
+                  child: Image.asset('assets/images/passenger.jpg')
               ),
 
               Padding(
@@ -84,7 +93,7 @@ class _PassengerLoginState extends State<PassengerLogin> {
                             if (_formKey.currentState!.validate()) {
                               if(existingPassenger(_passportController.text)) {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                    FlightInfoScreen(passportNum: _passportController.text)));
+                                    PassengerDetails(passportNum: _passportController.text)));
                               } else {
                                 setState(() => _errorMessage = 'Passenger Not Fount');
                               }}

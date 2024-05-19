@@ -219,7 +219,7 @@ class EditFlightState extends State<EditFlight> {
                                   ),
                                 ),
                                 if(edited) IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     setState(() async {
                                       flight.openGateTime = await selectTime(context);
                                       flight.closeGateTime = flight.openGateTime!.add(gateTime!);
@@ -304,14 +304,14 @@ class EditFlightState extends State<EditFlight> {
                         height: size.height * 0.08,
                         child: ElevatedButton(
                           onPressed: _editing ? null : () async {
-                            if(!_formKey.currentState!.validate()){
+                            if(_formKey.currentState!.validate()){
                               setState(() =>_editing = true);
                               await updateFlight(context);
-                              setState(() => _editing = false);
+                              setState(() {_editing = false; edited = false;});
                             }
                             },
                           child: Text(
-                            _editing ? 'editing...' : 'edited',
+                            _editing ? 'editing...' : 'edit',
                             style:
                             const TextStyle(color: Colors.white),
                           ),

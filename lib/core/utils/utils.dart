@@ -24,6 +24,7 @@ bool existingPassenger(String passportNum) {
 
 Future<void> fetchPassengersEvent() async {
   myPassengers = await PassengersFirebaseManger.getPassengers();
+  passportNumbersList = getPassportNumbersList();
   debugPrint('myPassengers: $myPassengers');
 }
 
@@ -35,4 +36,9 @@ Future<void> fetchFlightsEvent() async {
   debugPrint('before myFlights: $myFlights');
   myFlights = await FlightsFirebaseManger.getFlights();
   debugPrint('myFlights: $myFlights');
+}
+
+List<String> getPassportNumbersList(){
+  debugPrint('myPassengers get: $myPassengers');
+  return myPassengers.map((passenger) => passenger.passportNum ).toList();
 }

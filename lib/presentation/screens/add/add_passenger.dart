@@ -1,6 +1,7 @@
 import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/global/global.dart';
 import '../../../core/utils/colors.dart';
 import '../../../data/models/passenger_model.dart';
 import '../../../data/repos/flights_firebase.dart';
@@ -18,20 +19,21 @@ class _AddPassengerState extends State<AddPassenger> {
   final _formKey = GlobalKey<FormState>();
 
   String? _errorMessage;
+  String _passportNum = '';
 
   final _passengerNameController = TextEditingController();
-  final _passportNumController = TextEditingController();
 
   String _selectedClass = 'A';
   final _satNumController = TextEditingController();
 
-
+  bool _newPassenger = true;
   bool _uploading = false;
+
+  Passenger _passenger = Passenger();
 
   @override
   void dispose() {
     _passengerNameController.dispose();
-    _passportNumController.dispose();
     _satNumController.dispose();
     super.dispose();
   }
@@ -95,32 +97,87 @@ class _AddPassengerState extends State<AddPassenger> {
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter Passenger Name'
                             : null,
+                        enabled: _newPassenger,
                       ),
                       SizedBox(height: size.height * 0.02),
 
-                      //passport
-                      TextFormField(
-                        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-                        controller: _passportNumController,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(15))),
-                          labelText: 'Passport Number',
-                          labelStyle: Theme.of(context).textTheme.bodySmall,
-                          prefixIcon: Icon(
-                            Icons.confirmation_num,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        keyboardType: TextInputType.name,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter Passport Number'
-                            : null,
+                      //passport num
+                      Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          if (textEditingValue.text == '') {
+                            return const Iterable<String>.empty();
+                          }
+                          return passportNumbersList.where((String dName) {
+                            return dName.contains(textEditingValue.text.toLowerCase());
+                          });
+                        },
+                        onSelected: (String selection) => _choosePassenger(selection),
+                        optionsMaxHeight: size.height * 0.2,
+                        fieldViewBuilder: (BuildContext context,
+                            TextEditingController tEC,
+                            FocusNode focusNode,
+                            onFieldSubmitted) {
+                          return TextFormField(
+                            controller: tEC,
+                            focusNode: focusNode,
+                            onChanged: (String value) {
+                              if(_passportNum == value) {
+                                debugPrint('_passportNum == value: $_passportNum == $value');
+                                _choosePassenger(value);
+                              } else {
+                                setState(() {
+                                  _newPassenger = true;
+                                  _passportNum = value;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(15))),
+                              labelText: 'Passport Number',
+                              labelStyle: Theme.of(context).textTheme.bodySmall,
+                              prefixIcon: Icon(Icons.confirmation_num, color: Theme.of(context).primaryColor,),
+                            ),
+                            keyboardType: TextInputType.name,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please enter Passport Number'
+                                : null,
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context,
+                            AutocompleteOnSelected<String> onSelected,
+                            Iterable<String> options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Card(
+                              child: SizedBox(
+                                width: size.width * 0.89,
+                                height: size.height * 0.3,
+                                child: ListView(
+                                  children: options.map((String option) => GestureDetector(
+                                      onTap: () => onSelected(option),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(size.width * 0.01),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            radius: 18,
+                                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                                            child: Icon(Icons.confirmation_num, color: Theme.of(context).primaryColor,),
+                                          ),
+                                          title: Text(option),
+                                        ),
+                                      ))).toList(),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       SizedBox(height: size.height * 0.02),
 
                       //class type + sat num
+                      if(_newPassenger)
                       Row(
                         children: [
                           Expanded(
@@ -216,24 +273,15 @@ class _AddPassengerState extends State<AddPassenger> {
                                       : () async {
                                           if (!_formKey.currentState!
                                               .validate() || _selectedClass == 'class'
+                                              || _passportNum == ''
                                           ) {
-                                            setState(() {
-                                              _errorMessage =
-                                                  'please add data first';
-                                            });
+                                            setState(() => _errorMessage = 'please add data first');
+                                          } else if (!_newPassenger && _passenger.flightIds.contains(widget.flightId)) {
+                                            setState(() => _errorMessage = 'Exiting Passenger in same flight');
                                           } else {
-                                            // Set `_uploading` to true before starting the upload
-                                            setState(() {
-                                              _uploading = true;
-                                            });
-
-                                            // Call the function to upload data
+                                            setState(() => _uploading = true);
                                             await uploadPassenger(context);
-
-                                            // Set `_uploading` to false after the upload is complete
-                                            setState(() {
-                                              _uploading = false;
-                                            });
+                                            setState(() => _uploading = false);
                                           }
                                         },
                                   child: Text(
@@ -261,11 +309,18 @@ class _AddPassengerState extends State<AddPassenger> {
   Future uploadPassenger(BuildContext context) async {
 
     try {
-      String passengerId = await PassengersFirebaseManger.uploadPassenger(Passenger(
+
+      if(_newPassenger){
+        _passenger.flightIds.add(widget.flightId);
+        PassengersFirebaseManger.addFlightIdToPassenger(_passenger.passengerId, widget.flightId);
+      }
+
+      String passengerId = !_newPassenger? _passenger.passengerId :
+      await PassengersFirebaseManger.uploadPassenger(Passenger(
         airlineId: widget.airlineId,
-        flightId: widget.flightId,
+        flightIds: [widget.flightId],
         passengerName: _passengerNameController.text,
-        passportNum: _passportNumController.text,
+        passportNum: _passportNum,
         classType: _selectedClass,
         satNum: int.parse(_satNumController.text)
       ));
@@ -273,6 +328,7 @@ class _AddPassengerState extends State<AddPassenger> {
       await FlightsFirebaseManger.addPassengerId(widget.flightId, passengerId);
 
       await fetchPassengersEvent();
+      await fetchFlightsEvent();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -285,11 +341,24 @@ class _AddPassengerState extends State<AddPassenger> {
     }
   }
 
+  void _choosePassenger(String value){
+    setState(() {
+      _newPassenger = false;
+      _passportNum = value;
+      _passenger = myPassengers.firstWhere((passenger) =>
+      passenger.passportNum == value);
+      _passengerNameController.text = _passenger.passengerName;
+      _selectedClass = _passenger.classType;
+      _satNumController.text = _passenger.satNum.toString();
+    });
+  }
+
   void _clearFields() {
     _passengerNameController.clear();
-    _passportNumController.clear();
+    _passportNum = '';
     _satNumController.clear();
     _selectedClass = 'A';
+    _newPassenger = true;
     _errorMessage = null;
 
   }

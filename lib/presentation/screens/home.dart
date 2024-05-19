@@ -40,7 +40,12 @@ class _HomeState extends State<Home> {
                 onPressed: () => Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
                     )),
-                child:  Text('Passenger',style: context.getThemeTextStyle().titleLarge),
+                child:  Stack(
+                  children: [
+                    Image.asset('assets/images/passenger.jpg',fit: BoxFit.cover,),
+                    Text('Passenger',style: context.getThemeTextStyle().titleLarge),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: size.height * 0.01),
@@ -51,7 +56,12 @@ class _HomeState extends State<Home> {
                 onPressed: () => Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: false),
                 )),
-                child:  Text('Airline',style: context.getThemeTextStyle().titleLarge),
+                child: Stack(
+                  children: [
+                    Image.asset('assets/images/airline.jpg',fit: BoxFit.cover,),
+                    Text('Airline',style: context.getThemeTextStyle().titleLarge),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: size.height * 0.01),
@@ -62,7 +72,12 @@ class _HomeState extends State<Home> {
                 onPressed: () => Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: true),
                     )),
-                child:  Text('Airport',style: context.getThemeTextStyle().titleLarge),
+                child: Stack(
+                  children: [
+                    Image.asset('assets/images/airport.jpg',fit: BoxFit.cover,),
+                    Text('Airport',style: context.getThemeTextStyle().titleLarge),
+                  ],
+                ),
               ),
             ),
           ],
