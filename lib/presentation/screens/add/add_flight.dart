@@ -190,12 +190,15 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {
-                                  setState(() async => departureTime = await selectDate(context));
+                                onPressed: () async {
+                                  _errorMessage = null;
+                                  await selectDate(context).then((value) {
+                                    if(value != null) setState(() => departureTime = value);
+                                  });
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(departureTime == null? 'Departure Time'
-                                    : DateFormat('dd/MM,  HH:mm a').format(departureTime!),
+                                    : DateFormat('dd/MM,  j:mm a').format(departureTime!),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
@@ -210,8 +213,11 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {
-                                  setState(() async => arrivalTime = await selectDate(context));
+                                onPressed: () async {
+                                  _errorMessage = null;
+                                  await selectDate(context).then((value) {
+                                    if(value != null) setState(() => arrivalTime = value);
+                                  });
                                 },
                                 icon: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
                                 label: Text(arrivalTime == null? 'Arrival Time'
@@ -236,8 +242,13 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {
-                                  setState(() async => openGateTime = await selectTime(context));
+                                onPressed: departureTime == null? (){
+                                  setState(() => _errorMessage = 'select departure Time first');
+                                } : () async {
+                                  _errorMessage = null;
+                                  await selectTime(context, departureTime!).then((value) {
+                                    if(value != null) setState(() => openGateTime = value);
+                                  });
                                 },
                                 icon: Icon(Icons.door_front_door_outlined, color: Theme.of(context).primaryColor),
                                 label: Text( openGateTime == null? 'open Gate Time'
@@ -256,8 +267,13 @@ class _AddFlightState extends State<AddFlight> {
                                   backgroundColor: Theme.of(context).canvasColor,
                                   foregroundColor: Theme.of(context).primaryColor,
                                 ),
-                                onPressed: () {
-                                  setState(() async => closeGateTime = await selectTime(context));
+                                onPressed: departureTime == null? (){
+                                  setState(() => _errorMessage = 'select departure Time first');
+                                } : () async {
+                                  _errorMessage = null;
+                                  await selectTime(context, departureTime!).then((value) {
+                                    if(value != null) setState(() => closeGateTime = value);
+                                  });
                                 },
                                 icon: Icon(Icons.door_front_door, color: Theme.of(context).primaryColor),
                                 label: Text( closeGateTime == null? 'close Gate Time'
@@ -322,18 +338,14 @@ class _AddFlightState extends State<AddFlight> {
                                           } else if(departureTime == null || arrivalTime == null
                                           || openGateTime == null || closeGateTime == null){
                                             setState(() => _errorMessage = 'please enter dates');
-                                          }
-                                          else {
-                                            // Set `_uploading` to true before starting the upload
+                                          } else if(arrivalTime!.isBefore(departureTime!) || arrivalTime!.difference(departureTime!).inDays > 0 ||
+                                              closeGateTime!.isBefore(openGateTime!) || closeGateTime!.difference(openGateTime!).inHours > 2 ||
+                                              departureTime!.isBefore(closeGateTime!) || departureTime!.difference(closeGateTime!).inHours > 2){
+                                            setState(() => _errorMessage = 'please enter Valid dates');
+                                          } else {
                                             setState(() =>_uploading = true);
-
-                                            // Call the function to upload data
                                             await uploadFlight(context);
-
-                                            // Set `_uploading` to false after the upload is complete
-                                            setState(() {
-                                              _uploading = false;
-                                            });
+                                            setState(() => _uploading = false);
                                           }
                                         },
                                   child: Text(
@@ -391,32 +403,6 @@ class _AddFlightState extends State<AddFlight> {
     } catch (e) {
       _errorMessage = 'Error: $e';
     }
-  }
-
-  //date
-  DateTime _selectedDate = DateTime.now();
-
-  Future<DateTime> selectDate(BuildContext context) async {
-    await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    ).then((selectedDate) async {
-      showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
-      ).then((selectedTime){
-        _selectedDate = selectedDate!.add(Duration(hours: selectedTime!.hour, minutes: selectedTime.minute));
-      });
-    });
-    return _selectedDate;
-  }
-
-  Future<DateTime> selectTime(BuildContext context) async {
-    showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
-      ).then((selectedTime){
-        _selectedDate = departureTime!.copyWith(hour: selectedTime!.hour, minute: selectedTime.minute);
-    });
-    return _selectedDate;
   }
 
   void _clearFields() {

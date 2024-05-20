@@ -51,7 +51,7 @@ class _PassengerLoginState extends State<PassengerLogin> {
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: Image.asset('assets/images/passenger.jpg')
+                  child: Image.asset('assets/images/passenger-min.jpg')
               ),
 
               Padding(

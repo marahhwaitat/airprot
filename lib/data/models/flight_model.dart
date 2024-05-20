@@ -42,8 +42,8 @@ class Flight {
         destination: map['destination'] ?? '',
         departureTime: map['departureTime'] == null
             ? DateTime.now() : DateTime.parse(map['departureTime'] as String),
-        arrivalTime: map['arriveTime'] == null
-            ? DateTime.now() : DateTime.parse(map['arriveTime'] as String),
+        arrivalTime: map['arrivalTime'] == null
+            ? DateTime.now() : DateTime.parse(map['arrivalTime'] as String),
         openGateTime: map['openGateTime'] == null
             ? DateTime.now() : DateTime.parse(map['openGateTime'] as String),
         closeGateTime: map['closeGateTime'] == null
@@ -59,7 +59,7 @@ class Flight {
     'origin': flight.origin,
     'destination': flight.destination,
     'departureTime': flight.departureTime!.toIso8601String(),
-    'arriveTime': flight.arrivalTime!.toIso8601String(),
+    'arrivalTime': flight.arrivalTime!.toIso8601String(),
     'openGateTime': flight.openGateTime!.toIso8601String(),
     'closeGateTime': flight.closeGateTime!.toIso8601String(),
     'passengerIds': flight.passengerIds,

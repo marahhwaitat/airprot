@@ -24,6 +24,8 @@ class EditFlightState extends State<EditFlight> {
   late Duration remainingTime;
   bool edited = false;
 
+  String? _errorMessage;
+
   Duration? flightTime;
   Duration? gateTime;
 
@@ -71,7 +73,11 @@ class EditFlightState extends State<EditFlight> {
           if(!edited)
           TextButton(
             onPressed: (){
-              setState(() => edited = true);
+              if(remainingTime.inSeconds < 0) {
+                setState(() => _errorMessage = 'Ended Flight');
+              } else {
+                setState(() => edited = true);
+              }
             },
             child: Text('Edit Flight', style: TextStyle(color: primary),),
           ),
@@ -123,10 +129,15 @@ class EditFlightState extends State<EditFlight> {
                                   ),
                                 ),
                                 if(edited) IconButton(
-                                  onPressed: () {
-                                    setState(() async {
-                                    flight.departureTime = await selectTime(context);
-                                    flight.arrivalTime = flight.departureTime!.add(flightTime!);
+                                  onPressed: () async {
+                                    _errorMessage = null;
+                                    await selectDate(context, initialDate: flight.departureTime).then((value) {
+                                      if(value != null) {
+                                        setState(() {
+                                          flight.departureTime = value;
+                                          flight.arrivalTime = flight.departureTime!.add(flightTime!);
+                                        });
+                                      }
                                     });
                                   },
                                   icon: const Icon(Icons.edit, size: 15, color: Colors.blue,),
@@ -220,9 +231,14 @@ class EditFlightState extends State<EditFlight> {
                                 ),
                                 if(edited) IconButton(
                                   onPressed: () async {
-                                    setState(() async {
-                                      flight.openGateTime = await selectTime(context);
-                                      flight.closeGateTime = flight.openGateTime!.add(gateTime!);
+                                    _errorMessage = null;
+                                    await selectTime(context, flight.departureTime!).then((value) {
+                                      if(value != null) {
+                                        setState(() {
+                                        flight.openGateTime = value;
+                                        flight.closeGateTime = flight.openGateTime!.add(gateTime!);
+                                      });
+                                      }
                                     });
                                   },
                                   icon: const Icon(Icons.edit, size: 15, color: Colors.blue,),
@@ -254,7 +270,7 @@ class EditFlightState extends State<EditFlight> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              _formatRemainingTime(remainingTime),
+                              formatRemainingTime(remainingTime),
                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Colors.red,
                               ),
@@ -268,6 +284,11 @@ class EditFlightState extends State<EditFlight> {
               ),
 
               SizedBox(height: size.height * 0.02),
+              if (_errorMessage != null) Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+              SizedBox(height: size.height * 0.04),
 
               //add or cancel
               if(edited)
@@ -305,9 +326,15 @@ class EditFlightState extends State<EditFlight> {
                         child: ElevatedButton(
                           onPressed: _editing ? null : () async {
                             if(_formKey.currentState!.validate()){
-                              setState(() =>_editing = true);
-                              await updateFlight(context);
-                              setState(() {_editing = false; edited = false;});
+                              if(flight.departureTime!.isBefore(flight.closeGateTime!) ||
+                                  flight.departureTime!.difference(flight.closeGateTime!).inHours > 2){
+                              setState(() => _errorMessage = 'please enter Valid dates');
+                            } else{
+                                setState(() =>_editing = true);
+                                await updateFlight(context);
+                                setState(() {_editing = false; edited = false;});
+                              }
+
                             }
                             },
                           child: Text(
@@ -372,15 +399,6 @@ class EditFlightState extends State<EditFlight> {
     );
   }
 
-  String _formatRemainingTime(Duration duration) {
-    int hours = duration.inHours;
-    int minutes = duration.inMinutes.remainder(60);
-    int seconds = duration.inSeconds.remainder(60);
-    return '$hours:${_formatTimeComponent(minutes)}:${_formatTimeComponent(seconds)}';
-  }
-
-  String _formatTimeComponent(int component) => component < 10 ? '0$component' : '$component';
-
   Future updateFlight(BuildContext context) async {
     try {
       //update Flight
@@ -400,31 +418,4 @@ class EditFlightState extends State<EditFlight> {
       rethrow;
     }
   }
-
-  //date
-  DateTime _selectedDate = DateTime.now();
-
-  Future<DateTime> selectDate(BuildContext context) async {
-    await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    ).then((selectedDate) async {
-      showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
-      ).then((selectedTime){
-        _selectedDate = selectedDate!.add(Duration(hours: selectedTime!.hour, minutes: selectedTime.minute));
-      });
-    });
-    return _selectedDate;
-  }
-
-  Future<DateTime> selectTime(BuildContext context) async {
-    showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
-    ).then((selectedTime){
-      _selectedDate = flight.departureTime!.copyWith(hour: selectedTime!.hour, minute: selectedTime.minute);
-    });
-    return _selectedDate;
-  }
-
 }

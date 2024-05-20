@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../core/utils/utils.dart';
@@ -29,9 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return AnimatedSplashScreen(
       duration: 1000,
       splashIconSize: size.height,
-      splash: Image.asset('assets/images/splash.png',
-          width: size.width ,height: size.height * 0.4,
-      ),
+      splash: Lottie.asset('assets/lottie/login.json', width: size.width),
       nextScreen: const Home(),
       splashTransition: SplashTransition.fadeTransition,
       pageTransitionType: PageTransitionType.fade,

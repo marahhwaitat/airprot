@@ -33,50 +33,65 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(height: size.height * 0.1),
 
-            SizedBox(
-              width: size.width,
-              height: size.height * 0.08,
-              child: ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
-                    )),
-                child:  Stack(
-                  children: [
-                    Image.asset('assets/images/passenger.jpg',fit: BoxFit.cover,),
-                    Text('Passenger',style: context.getThemeTextStyle().titleLarge),
-                  ],
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              child: Container(
+                width: size.width,
+                height: size.height * 0.08,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/passenger-min.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 1),
+                  onPressed: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
+                  )),
+                  child: Text('Passenger',style: context.getThemeTextStyle().titleLarge),
                 ),
               ),
             ),
-            SizedBox(height: size.height * 0.01),
-            SizedBox(
-              width: size.width,
-              height: size.height * 0.08,
-              child: ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: false),
-                )),
-                child: Stack(
-                  children: [
-                    Image.asset('assets/images/airline.jpg',fit: BoxFit.cover,),
-                    Text('Airline',style: context.getThemeTextStyle().titleLarge),
-                  ],
+            SizedBox(height: size.height * 0.02),
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              child: Container(
+                width: size.width,
+                height: size.height * 0.08,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/airline-min.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 0),
+                  onPressed: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: false),
+                  )),
+                  child: Text('Airline',style: context.getThemeTextStyle().titleLarge),
                 ),
               ),
             ),
-            SizedBox(height: size.height * 0.01),
-            SizedBox(
-              width: size.width,
-              height: size.height * 0.08,
-              child: ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: true),
-                    )),
-                child: Stack(
-                  children: [
-                    Image.asset('assets/images/airport.jpg',fit: BoxFit.cover,),
-                    Text('Airport',style: context.getThemeTextStyle().titleLarge),
-                  ],
+            SizedBox(height: size.height * 0.02),
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              child: Container(
+                width: size.width,
+                height: size.height * 0.08,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/airport-min.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 1),
+                  onPressed: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => const AdminLogin(airport: true),
+                      )),
+                  child: Text('Airport',style: context.getThemeTextStyle().titleLarge),
                 ),
               ),
             ),

@@ -121,15 +121,10 @@ class _AddPassengerState extends State<AddPassenger> {
                             controller: tEC,
                             focusNode: focusNode,
                             onChanged: (String value) {
-                              if(_passportNum == value) {
-                                debugPrint('_passportNum == value: $_passportNum == $value');
-                                _choosePassenger(value);
-                              } else {
-                                setState(() {
+                              setState(() {
                                   _newPassenger = true;
                                   _passportNum = value;
-                                });
-                              }
+                              });
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
@@ -153,7 +148,7 @@ class _AddPassengerState extends State<AddPassenger> {
                             child: Card(
                               child: SizedBox(
                                 width: size.width * 0.89,
-                                height: size.height * 0.3,
+                                height: size.height * 0.25,
                                 child: ListView(
                                   children: options.map((String option) => GestureDetector(
                                       onTap: () => onSelected(option),
@@ -276,7 +271,8 @@ class _AddPassengerState extends State<AddPassenger> {
                                               || _passportNum == ''
                                           ) {
                                             setState(() => _errorMessage = 'please add data first');
-                                          } else if (!_newPassenger && _passenger.flightIds.contains(widget.flightId)) {
+                                          } else if ((!_newPassenger || passportNumbersList.contains(_passportNum)) &&
+                                              isPassportExist(_passportNum, widget.flightId)) {
                                             setState(() => _errorMessage = 'Exiting Passenger in same flight');
                                           } else {
                                             setState(() => _uploading = true);
@@ -310,7 +306,7 @@ class _AddPassengerState extends State<AddPassenger> {
 
     try {
 
-      if(_newPassenger){
+      if(!_newPassenger){
         _passenger.flightIds.add(widget.flightId);
         PassengersFirebaseManger.addFlightIdToPassenger(_passenger.passengerId, widget.flightId);
       }
@@ -354,12 +350,13 @@ class _AddPassengerState extends State<AddPassenger> {
   }
 
   void _clearFields() {
-    _passengerNameController.clear();
-    _passportNum = '';
-    _satNumController.clear();
-    _selectedClass = 'A';
-    _newPassenger = true;
-    _errorMessage = null;
-
+    setState(() {
+      _passengerNameController.clear();
+      _passportNum = '';
+      _satNumController.clear();
+      _selectedClass = 'A';
+      _newPassenger = true;
+      _errorMessage = null;
+    });
   }
 }

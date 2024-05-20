@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/global/global.dart';
+import '../../../core/utils/utils.dart';
 import '../../../data/models/flight_model.dart';
 import '../../../data/models/passenger_model.dart';
 
@@ -25,10 +26,9 @@ class PassengerDetailsState extends State<PassengerDetails> {
   void initState() {
     super.initState();
     _passenger = myPassengers.firstWhere((passenger) => passenger.passportNum == widget.passportNum);
-    debugPrint('_passenger: $_passenger');
     _flights = _passenger.flightIds.map((flightId) => myFlights.
     firstWhere((flight) => flight.flightId == flightId)).toList();
-    debugPrint('_flight: $_flights');
+    _flights.sort((a,b) => b.departureTime!.compareTo(a.departureTime!));
     // Start the timer
     _startTimer();
   }
@@ -54,34 +54,43 @@ class PassengerDetailsState extends State<PassengerDetails> {
       appBar: AppBar(
         title: const Text('Flight Information'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle('Passenger Details'),
-            _buildInfoTable([
-              {'label': 'Passenger Name', 'value': _passenger.passengerName},
-              {'label': 'Passport Number', 'value': _passenger.passportNum},
-              //{'label': 'Class ', 'value': _flights.origin},
-              //{'label': 'Destination', 'value': _flights.destination},
-            ]),
-            const SizedBox(height: 20.0),
-            _buildSectionTitle('Flight Details'),
-            ... _flights.map((flight) => _buildInfoTable([
-              {'label': 'Departure Time',
-                'value': DateFormat('dd/MM,  HH:mm a').format(flight.departureTime!)},
-              {'label': 'Arrival Time',
-                'value': DateFormat('dd/MM,  HH:mm a').format(flight.arrivalTime!)},
-              {'label': 'Gate Number', 'value': '${flight.gateNum}'},
-              {'label': 'Open Gate Time',
-                'value': DateFormat('HH:mm a').format(flight.openGateTime!)},
-              {'label': 'Close Gate Time',
-                'value': DateFormat('HH:mm a').format(flight.closeGateTime!)},
-              {'label': 'Remaining Time', 'value': _formatRemainingTime(
-                  flight.departureTime!.difference(DateTime.now())), 'color': ''},
-            ])),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('Passenger Details'),
+              _buildInfoTable([
+                {'label': 'Passenger Name', 'value': _passenger.passengerName},
+                {'label': 'Passport Number', 'value': _passenger.passportNum},
+                //{'label': 'Class ', 'value': _flights.origin},
+                //{'label': 'Destination', 'value': _flights.destination},
+              ]),
+              const SizedBox(height: 20.0),
+              _buildSectionTitle('Flight Details'),
+              ... _flights.map((flight) => Column(
+                children: [
+                  _buildSectionTitle('Flight: ${flight.flightNum}'),
+                  _buildInfoTable([
+                    {'label': 'Origin', 'value': flight.origin},
+                    {'label': 'Destination', 'value': flight.destination},
+                    {'label': 'Departure Time',
+                      'value': DateFormat('dd/MM,  HH:mm a').format(flight.departureTime!)},
+                    {'label': 'Arrival Time',
+                      'value': DateFormat('dd/MM,  HH:mm a').format(flight.arrivalTime!)},
+                    {'label': 'Gate Number', 'value': '${flight.gateNum}'},
+                    {'label': 'Open Gate Time',
+                      'value': DateFormat('HH:mm a').format(flight.openGateTime!)},
+                    {'label': 'Close Gate Time',
+                      'value': DateFormat('HH:mm a').format(flight.closeGateTime!)},
+                    {'label': 'Remaining Time', 'value': formatRemainingTime(
+                        flight.departureTime!.difference(DateTime.now())), 'color': ''},
+                  ]),
+                ],
+              )),
+            ],
+          ),
         ),
       ),
     );
@@ -103,6 +112,7 @@ class PassengerDetailsState extends State<PassengerDetails> {
 
   Widget _buildInfoTable(List<Map<String, String>> data) {
     return Container(
+      padding: const EdgeInsets.only(bottom: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.grey[200],
@@ -143,16 +153,5 @@ class PassengerDetailsState extends State<PassengerDetails> {
         }).toList(),
       ),
     );
-  }
-
-  String _formatRemainingTime(Duration duration) {
-    int hours = duration.inHours;
-    int minutes = duration.inMinutes.remainder(60);
-    int seconds = duration.inSeconds.remainder(60);
-    return '$hours:${_formatTimeComponent(minutes)}:${_formatTimeComponent(seconds)}';
-  }
-
-  String _formatTimeComponent(int component) {
-    return component < 10 ? '0$component' : '$component';
   }
 }

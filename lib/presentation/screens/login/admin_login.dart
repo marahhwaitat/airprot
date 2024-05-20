@@ -23,6 +23,8 @@ class _AdminLoginState extends State<AdminLogin> {
 
   String? _errorMessage;
 
+  bool _obscureText = true;
+
   @override
   void dispose() {
     _userNameController.dispose();
@@ -52,7 +54,7 @@ class _AdminLoginState extends State<AdminLogin> {
                   height: size.height * 0.4,
                   width: size.width,
                   child: widget.airport?
-                  Image.asset('assets/images/airport.jpg') : Image.asset('assets/images/airline.jpg')
+                  Image.asset('assets/images/airport-min.jpg') : Image.asset('assets/images/airline-min.jpg')
               ),
 
               Padding(
@@ -87,12 +89,12 @@ class _AdminLoginState extends State<AdminLogin> {
                           labelStyle: Theme.of(context).textTheme.bodySmall,
                           prefixIcon: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor,),
                           suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(CupertinoIcons.eye_slash_fill)
+                              onPressed: () => setState(() => _obscureText = !_obscureText),
+                              icon: Icon(_obscureText? CupertinoIcons.eye_solid : CupertinoIcons.eye_slash_fill)
                           ),
                         ),
                         keyboardType: TextInputType.visiblePassword,
-                        //obscureText: val.obscureText,
+                        obscureText: _obscureText,
                         validator: (value) => value == null || value.isEmpty ?
                         'Please enter the password' : value.length<6 ?
                         'the minimum length is 6 character': null,

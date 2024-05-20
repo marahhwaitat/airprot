@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../data/repos/airlines_firebase.dart';
@@ -15,8 +17,6 @@ extension ContextEx on BuildContext
 
 bool existingPassenger(String passportNum) {
   for (var passenger in myPassengers) {
-    debugPrint('passportNum: ${passenger.passportNum}');
-    debugPrint('passportNum: ${passenger.passportNum == passportNum}');
     if(passenger.passportNum == passportNum) return true;
   }
   return false;
@@ -25,20 +25,66 @@ bool existingPassenger(String passportNum) {
 Future<void> fetchPassengersEvent() async {
   myPassengers = await PassengersFirebaseManger.getPassengers();
   passportNumbersList = getPassportNumbersList();
-  debugPrint('myPassengers: $myPassengers');
 }
 
 Future<void> fetchFlightsEvent() async {
-  debugPrint('before myAirlines: $myAirlines');
   myAirlines = await AirlinesFirebaseManger.getAirlines();
-  debugPrint('myAirlines: $myAirlines');
-
-  debugPrint('before myFlights: $myFlights');
   myFlights = await FlightsFirebaseManger.getFlights();
-  debugPrint('myFlights: $myFlights');
 }
 
 List<String> getPassportNumbersList(){
-  debugPrint('myPassengers get: $myPassengers');
   return myPassengers.map((passenger) => passenger.passportNum ).toList();
+}
+
+bool isPassportExist(String passportNum, String flightId){
+  return myPassengers.firstWhere((passenger) => passenger.passportNum == passportNum).flightIds.contains(flightId);
+}
+
+String formatRemainingTime(Duration duration) {
+  int hours = duration.inHours;
+  int minutes = duration.inMinutes.remainder(60);
+  int seconds = duration.inSeconds.remainder(60);
+  return duration.inSeconds < 0? 'Ended' : '$hours:${formatTimeComponent(minutes)}:${formatTimeComponent(seconds)}';
+}
+
+String formatTimeComponent(int component) {
+  return component < 10 ? '0$component' : '$component';
+}
+
+//date
+DateTime? _selectedDate = DateTime.now();
+
+Future<DateTime?> selectDate(BuildContext context, {DateTime? initialDate}) async {
+  await showDatePicker(
+    context: context,
+    initialDate: initialDate ?? DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime.now().add(const Duration(days: 62)),
+  ).then((selectedDate) async {
+    if(selectedDate == null) {
+      _selectedDate = null;
+    } else {
+      await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
+      ).then((selectedTime) {
+        if(selectedTime == null) {
+          _selectedDate = null;
+        } else {
+          _selectedDate = selectedDate.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+        }
+      });
+    }
+  });
+  return _selectedDate;
+}
+
+Future<DateTime?> selectTime(BuildContext context, DateTime time) async {
+  await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 0, minute: 0)
+  ).then((selectedTime){
+    if(selectedTime == null) {
+      _selectedDate = null;
+    } else {
+      _selectedDate = time.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+    }
+  });
+  return _selectedDate;
 }

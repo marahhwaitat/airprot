@@ -22,7 +22,7 @@ class Passenger {
   factory Passenger.fromMap(Map<String, dynamic> map, String id) {
     return Passenger(
       airlineId: map['airlineId'] ?? '',
-      flightIds: List<String>.from(map['flightId'] ?? const []),
+      flightIds: List<String>.from(map['flightIds'] ?? const []),
       passengerId: id,
       passengerName: map['passengerName'] ?? '',
       passportNum: map['passportNum'] ?? '',
@@ -33,7 +33,7 @@ class Passenger {
 
   static Map<String, dynamic> toMap(Passenger passenger) => {
     'airlineId': passenger.airlineId,
-    'flightId': passenger.flightIds,
+    'flightIds': passenger.flightIds,
     'passengerName': passenger.passengerName,
     'passportNum': passenger.passportNum,
     'classType': passenger.classType,
