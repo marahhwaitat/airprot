@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
             SizedBox(height: size.height * 0.05),
             SizedBox(
               height: size.height * 0.3,
-              child: Lottie.asset('assets/lottie/login.json', width: size.width),
+              child: Image.asset('assets/images/logo.jpeg', width: size.width),
             ),
             SizedBox(height: size.height * 0.1),
 
@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
                 height: size.height * 0.08,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/passenger-min.jpg'),
+                    image: AssetImage('assets/images/passenger.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
                 height: size.height * 0.08,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/airline-min.jpg'),
+                    image: AssetImage('assets/images/airline.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
                 height: size.height * 0.08,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/airport-min.jpg'),
+                    image: AssetImage('assets/images/airport.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
