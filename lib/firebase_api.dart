@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'core/global/global.dart';
 
 late AndroidNotificationChannel channel;
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -49,8 +49,7 @@ class FirebaseApi {
     /// We use this channel in the `AndroidManifest.xml` file to override the
     /// default FCM channel to enable heads up notifications.
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
     /// Update the iOS foreground notification presentation options to allow
@@ -74,13 +73,11 @@ class FirebaseApi {
 
   void showFlutterNotification(RemoteMessage message) {
     RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
-    if (notification != null && android != null && !kIsWeb) {
+    if (notification != null) {
       flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
+        0,
         notification.title,
         notification.body,
-        payload: jsonEncode(message.toMap()),
         NotificationDetails(
           android: AndroidNotificationDetails(
             channel.id,
@@ -94,9 +91,19 @@ class FirebaseApi {
   }
 
   initNotification() async {
-    await _firebaseMessaging.requestPermission();
+    notificationSettings = await _firebaseMessaging.requestPermission();
     await setupFlutterNotifications();
     initLocalNotification();
     initPushNotification();
   }
+
+  void subscribeToFLightsTopics(List<String> ids){
+    if (notificationSettings!.authorizationStatus == AuthorizationStatus.authorized) {
+      ids.map((id) => _firebaseMessaging.subscribeToTopic(id));
+    }
+  }
+
+  void unSubscribeFromFLightsTopics(List<String> ids) =>
+      ids.map((id) => _firebaseMessaging.unsubscribeFromTopic(id));
+
 }

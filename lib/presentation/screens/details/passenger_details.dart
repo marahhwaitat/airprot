@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/global/global.dart';
+import '../../../core/utils/colors.dart';
 import '../../../core/utils/utils.dart';
 import '../../../data/models/flight_model.dart';
 import '../../../data/models/passenger_model.dart';
+import '../../../data/repos/passenger_local.dart';
+import '../../../firebase_api.dart';
+import '../home.dart';
 
 class PassengerDetails extends StatefulWidget {
   final String passportNum;
@@ -31,6 +35,7 @@ class PassengerDetailsState extends State<PassengerDetails> {
     _flights.sort((a,b) => b.departureTime!.compareTo(a.departureTime!));
     // Start the timer
     _startTimer();
+    FirebaseApi().subscribeToFLightsTopics(_passenger.flightIds);
   }
 
   @override
@@ -52,7 +57,19 @@ class PassengerDetailsState extends State<PassengerDetails> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flight Information'),
+        title: const Text('Flights Information'),
+        actions: [
+          IconButton(
+            onPressed: (){
+              PassengerLocal.editPassportNum('');
+              FirebaseApi().unSubscribeFromFLightsTopics(_passenger.flightIds);
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const Home(),
+              ));
+            },
+            icon: Icon(Icons.logout, color: primary,),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

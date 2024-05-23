@@ -1,7 +1,8 @@
 import 'package:airport/core/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
+import '../../data/repos/passenger_local.dart';
+import 'details/passenger_details.dart';
 import 'login/passenger_login.dart';
 import 'login/admin_login.dart';
 
@@ -46,9 +47,16 @@ class _HomeState extends State<Home> {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 1),
-                  onPressed: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
-                  )),
+                  onPressed: () {
+                    String? ret = PassengerLocal.getPassportNum();
+                    ret == null || ret == ''?
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const PassengerLogin(),
+                    )):
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => PassengerDetails(passportNum: ret,),
+                    ));
+                  } ,
                   child: Text('Passenger',style: context.getThemeTextStyle().titleLarge),
                 ),
               ),

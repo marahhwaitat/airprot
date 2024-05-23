@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/utils.dart';
+import '../../../data/repos/passenger_local.dart';
 import '../details/passenger_details.dart';
 
 class PassengerLogin extends StatefulWidget {
@@ -51,7 +52,7 @@ class _PassengerLoginState extends State<PassengerLogin> {
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: Image.asset('assets/images/passenger.jpg')
+                  child: Image.asset('assets/images/image.jpeg')
               ),
 
               Padding(
@@ -92,6 +93,7 @@ class _PassengerLoginState extends State<PassengerLogin> {
                           onPressed: (){
                             if (_formKey.currentState!.validate()) {
                               if(existingPassenger(_passportController.text)) {
+                                PassengerLocal.editPassportNum(_passportController.text);
                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                     PassengerDetails(passportNum: _passportController.text)));
                               } else {

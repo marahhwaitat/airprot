@@ -53,8 +53,7 @@ class _AdminLoginState extends State<AdminLogin> {
               SizedBox(
                   height: size.height * 0.4,
                   width: size.width,
-                  child: widget.airport?
-                  Image.asset('assets/images/airport.jpg') : Image.asset('assets/images/airline.jpg')
+                  child: Image.asset('assets/images/image.jpeg')
               ),
 
               Padding(

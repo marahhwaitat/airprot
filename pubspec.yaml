@@ -19,6 +19,8 @@ dependencies:
   firebase_messaging: ^14.9.2
   flutter_local_notifications: ^17.1.2
 
+  shared_preferences: ^2.2.3
+
   google_fonts:
 
   animated_splash_screen: ^1.3.0

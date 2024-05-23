@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'core/global/global.dart';
 import 'core/utils/themes.dart';
 import 'firebase_api.dart';
 import 'firebase_options.dart';
@@ -11,6 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  sharedPreferences = await SharedPreferences.getInstance();
   await FirebaseApi().initNotification();
   runApp(const MyApp());
 }
