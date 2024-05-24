@@ -15,7 +15,7 @@ exports.sendNotificationOnFirestoreUpdate = functions.firestore
             },
         };
 
-        admin.messaging().sendToTopic(id, message)
+        admin.messaging().sendToDevice('Admin', message)
             .then((response) => {
                 console.log('Message sent successfully:', response);
             })

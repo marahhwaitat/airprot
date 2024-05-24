@@ -51,9 +51,12 @@ class _AdminLoginState extends State<AdminLogin> {
               SizedBox(height: size.height * 0.02),
 
               SizedBox(
-                  height: size.height * 0.4,
+                  height: size.height * 0.3,
                   width: size.width,
-                  child: Image.asset('assets/images/image.jpeg')
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.asset('assets/images/image.jpeg', fit: BoxFit.cover,)
+                  ),
               ),
 
               Padding(
@@ -63,6 +66,8 @@ class _AdminLoginState extends State<AdminLogin> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: size.height * 0.02),
+
                       //user name
                       TextFormField(
                         controller: _userNameController,

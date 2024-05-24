@@ -19,6 +19,8 @@ dependencies:
   firebase_messaging: ^14.9.2
   flutter_local_notifications: ^17.1.2
 
+  flutter_native_splash: ^2.4.0
+
   shared_preferences: ^2.2.3
 
   google_fonts:
@@ -34,6 +36,11 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^3.0.2
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/logo.jpeg
+  android: true
 
 flutter:
 

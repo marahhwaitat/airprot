@@ -30,7 +30,10 @@ class _HomeState extends State<Home> {
             SizedBox(height: size.height * 0.05),
             SizedBox(
               height: size.height * 0.3,
-              child: Image.asset('assets/images/logo.jpeg', width: size.width),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.asset('assets/images/logo.jpeg', width: size.width, fit: BoxFit.cover,)
+              ),
             ),
             SizedBox(height: size.height * 0.1),
 

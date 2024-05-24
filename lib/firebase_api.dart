@@ -92,6 +92,9 @@ class FirebaseApi {
 
   initNotification() async {
     notificationSettings = await _firebaseMessaging.requestPermission();
+    if (notificationSettings!.authorizationStatus == AuthorizationStatus.authorized) {
+      _firebaseMessaging.subscribeToTopic('Admin');
+    }
     await setupFlutterNotifications();
     initLocalNotification();
     initPushNotification();
