@@ -1,7 +1,11 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-admin.initializeApp();
+var serviceAccount = require("/home/abdelrahman/Desktop/airprot/functions/airport.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 exports.sendNotificationOnFirestoreUpdate = functions.firestore
     .document('Flights/{id}')
@@ -15,7 +19,7 @@ exports.sendNotificationOnFirestoreUpdate = functions.firestore
             },
         };
 
-        admin.messaging().sendToDevice('Admin', message)
+        admin.messaging().sendToTopic('Admin', message)
             .then((response) => {
                 console.log('Message sent successfully:', response);
             })

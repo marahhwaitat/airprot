@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'core/global/global.dart';
@@ -7,6 +8,9 @@ late AndroidNotificationChannel channel;
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 bool isFlutterLocalNotificationsInitialized = false;
 
+Future<void> handleBackgroundMessage(RemoteMessage message) async {
+}
+
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
@@ -14,12 +18,9 @@ class FirebaseApi {
     if (message == null) return;
   }
 
-  Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  }
-
   Future<void> initLocalNotification() async {
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: AndroidInitializationSettings("@drawable/ic_launcher"),
+    InitializationSettings(android: AndroidInitializationSettings("@mipmap/ic_launcher"),
     );
 
     await flutterLocalNotificationsPlugin.initialize(
@@ -83,7 +84,7 @@ class FirebaseApi {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: '@drawable/ic_launcher',
+            icon: '@mipmap/ic_launcher',
           ),
         ),
       );
@@ -94,19 +95,11 @@ class FirebaseApi {
     notificationSettings = await _firebaseMessaging.requestPermission();
     if (notificationSettings!.authorizationStatus == AuthorizationStatus.authorized) {
       _firebaseMessaging.subscribeToTopic('Admin');
+      var token = await _firebaseMessaging.getToken();
+      debugPrint(token);
     }
     await setupFlutterNotifications();
     initLocalNotification();
     initPushNotification();
   }
-
-  void subscribeToFLightsTopics(List<String> ids){
-    if (notificationSettings!.authorizationStatus == AuthorizationStatus.authorized) {
-      ids.map((id) => _firebaseMessaging.subscribeToTopic(id));
-    }
-  }
-
-  void unSubscribeFromFLightsTopics(List<String> ids) =>
-      ids.map((id) => _firebaseMessaging.unsubscribeFromTopic(id));
-
 }
