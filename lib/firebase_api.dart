@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'core/global/global.dart';
@@ -20,7 +20,7 @@ class FirebaseApi {
 
   Future<void> initLocalNotification() async {
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+    InitializationSettings(android: AndroidInitializationSettings("mipmap/ic_launcher"),
     );
 
     await flutterLocalNotificationsPlugin.initialize(
@@ -84,7 +84,7 @@ class FirebaseApi {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: '@mipmap/ic_launcher',
+            icon: 'mipmap/ic_launcher',
           ),
         ),
       );
@@ -94,9 +94,11 @@ class FirebaseApi {
   initNotification() async {
     notificationSettings = await _firebaseMessaging.requestPermission();
     if (notificationSettings!.authorizationStatus == AuthorizationStatus.authorized) {
-      _firebaseMessaging.subscribeToTopic('Admin');
       var token = await _firebaseMessaging.getToken();
-      debugPrint(token);
+      if(sharedPreferences?.getString('token') == null || sharedPreferences?.getString('token') != token) {
+        sharedPreferences?.setString('token', token!);
+        FirebaseFirestore.instance.collection('Tokens').add({"token": token});
+      }
     }
     await setupFlutterNotifications();
     initLocalNotification();

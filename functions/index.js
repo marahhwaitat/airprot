@@ -1,29 +1,35 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-var serviceAccount = require("/home/abdelrahman/Desktop/airprot/functions/airport.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+admin.initializeApp();
 
 exports.sendNotificationOnFirestoreUpdate = functions.firestore
     .document('Flights/{id}')
     .onWrite((change, context) => {
-        const id = context.params.id
 
-        const message = {
-            notification: {
-                title: "Flight Updated!",
-                body: "Your Flight Details has been changed."
-            },
-        };
+        var tokens = [];
+        admin.firestore().collection('Tokens').get()
+            .then(documents => {
+                documents.forEach(doc => {
+                    var token = doc.data().token
+                    console.log('token:', token);
+                    tokens.push(token);
+                });
 
-        admin.messaging().sendToTopic('Admin', message)
-            .then((response) => {
-                console.log('Message sent successfully:', response);
-            })
-            .catch((error) => {
-                console.log('Error sending message:', error);
+                const message = {
+                    notification: {
+                        title: "Flight Updated!",
+                        body: "Your Flight Details has been changed."
+                    },
+                    token: tokens
+                };
+
+                admin.messaging().send(message)
+                    .then((response) => {
+                        console.log('Message sent successfully:', response);
+                    })
+                    .catch((error) => {
+                        console.log('Error sending message:', error);
+                    });
             });
     });
